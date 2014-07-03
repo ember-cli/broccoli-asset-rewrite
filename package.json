@@ -1,0 +1,29 @@
+{
+  "name": "broccoli-asset-rewrite",
+  "version": "0.0.1",
+  "description": "broccoli plugin to rewrite a source tree from an asset map.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rickharrison/broccoli-asset-rewrite"
+  },
+  "keywords": [
+    "broccoli",
+    "broccoli-plugin",
+    "asset",
+    "rewrite",
+    "fingerprint"
+  ],
+  "author": "Rick Harrison",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rickharrison/broccoli-asset-rewrite/issues"
+  },
+  "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
+  "dependencies": {
+    "broccoli-filter": "^0.1.6"
+  }
+}

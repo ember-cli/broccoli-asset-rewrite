@@ -36,6 +36,7 @@ describe('broccoli-asset-rev', function() {
     var tree = rewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
+        'images/sample.png': 'images/fingerprinted-sample.png',
       }
     });
 

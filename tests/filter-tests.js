@@ -37,6 +37,10 @@ describe('broccoli-asset-rev', function() {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
+        'fonts/OpenSans/Light/OpenSans-Light.eot': 'fonts/OpenSans/Light/fingerprinted-OpenSans-Light.eot',
+        'fonts/OpenSans/Light/OpenSans-Light.woff': 'fonts/OpenSans/Light/fingerprinted-OpenSans-Light.woff',
+        'fonts/OpenSans/Light/OpenSans-Light.ttf': 'fonts/OpenSans/Light/fingerprinted-OpenSans-Light.ttf',
+        'fonts/OpenSans/Light/OpenSans-Light.svg': 'fonts/OpenSans/Light/fingerprinted-OpenSans-Light.svg'
       }
     });
 

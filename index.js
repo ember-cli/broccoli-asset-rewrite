@@ -17,6 +17,12 @@ function AssetRewrite(inputTree, options) {
 AssetRewrite.prototype = Object.create(Filter.prototype);
 AssetRewrite.prototype.constructor = AssetRewrite;
 
+AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {
+  this._cache = {};
+
+  return Filter.prototype.processAndCacheFile.apply(this, arguments);
+};
+
 AssetRewrite.prototype.processString = function (string) {
   var newString = string;
 

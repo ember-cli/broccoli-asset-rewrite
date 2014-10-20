@@ -30,8 +30,22 @@ AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relative
  * @returns {boolean}
  */
 AssetRewrite.prototype.canProcessFile = function(relativePath) {
-  return this.ignore.indexOf(relativePath) === -1 && Filter.prototype.canProcessFile.apply(this, arguments);
-};
+  if (this.inverseAssetMap == null) {
+    var inverseAssetMap = {};
+    var assetMap = this.assetMap;
+    Object.keys(assetMap).forEach(function(key){
+      var value = assetMap[key];
+      inverseAssetMap[value] = key;
+    }, this);
+    this.inverseAssetMap = inverseAssetMap;
+  }
+  // relativePath can be an unfingerprinted file name or a fingerprinted file name
+  // check that neither of these variations are being ignored
+  if (this.ignore.indexOf(relativePath) !== -1 || this.inverseAssetMap.hasOwnProperty(relativePath)) {
+    return false;
+  }
+  return Filter.prototype.canProcessFile.apply(this, arguments);
+}
 
 AssetRewrite.prototype.processString = function (string) {
   var newString = string;

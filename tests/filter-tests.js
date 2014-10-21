@@ -45,4 +45,20 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   })
+
+  it('ignore option tell filter what files should not be processed', function(){
+    var sourcePath = 'tests/fixtures/with-ignore';
+    var tree = rewrite(sourcePath + '/input', {
+      assetMap: {
+        'foo/bar/widget.js': 'blahzorz-1.js',
+        'images/sample.png': 'images/fingerprinted-sample.png',
+      },
+      ignore: ['ignore-this-file.html']
+    });
+
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

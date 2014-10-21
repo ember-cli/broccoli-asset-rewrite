@@ -12,6 +12,7 @@ function AssetRewrite(inputTree, options) {
   this.extensions = options.replaceExtensions || ['html', 'css'];
   this.prepend = options.prepend || '';
   this.description = options.description;
+  this.ignore = options.ignore || []; // files to ignore
 }
 
 AssetRewrite.prototype = Object.create(Filter.prototype);
@@ -21,7 +22,30 @@ AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relative
   this._cache = {};
 
   return Filter.prototype.processAndCacheFile.apply(this, arguments);
-};
+}
+
+/**
+ * Checks that file is not being ignored and destination doesn't already have a file
+ * @param relativePath
+ * @returns {boolean}
+ */
+AssetRewrite.prototype.canProcessFile = function(relativePath) {
+  if (this.inverseAssetMap == null) {
+    var inverseAssetMap = {};
+    var assetMap = this.assetMap;
+    Object.keys(assetMap).forEach(function(key){
+      var value = assetMap[key];
+      inverseAssetMap[value] = key;
+    }, this);
+    this.inverseAssetMap = inverseAssetMap;
+  }
+  // relativePath can be an unfingerprinted file name or a fingerprinted file name
+  // check that neither of these variations are being ignored
+  if (this.ignore.indexOf(relativePath) !== -1 || this.ignore.indexOf(this.inverseAssetMap[relativePath]) !== -1) {
+    return false;
+  }
+  return Filter.prototype.canProcessFile.apply(this, arguments);
+}
 
 AssetRewrite.prototype.processString = function (string) {
   var newString = string;

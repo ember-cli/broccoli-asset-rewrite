@@ -41,7 +41,7 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
   }
   // relativePath can be an unfingerprinted file name or a fingerprinted file name
   // check that neither of these variations are being ignored
-  if (this.ignore.indexOf(relativePath) !== -1 || this.inverseAssetMap.hasOwnProperty(relativePath)) {
+  if (this.ignore.indexOf(relativePath) !== -1 || this.ignore.indexOf(this.inverseAssetMap[relativePath]) !== -1) {
     return false;
   }
   return Filter.prototype.canProcessFile.apply(this, arguments);

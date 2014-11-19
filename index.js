@@ -70,7 +70,7 @@ AssetRewrite.prototype.processString = function (string) {
 
   for (var key in this.assetMap) {
     if (this.assetMap.hasOwnProperty(key)) {
-      var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + key.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
+      var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(key) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
       var match = null;
 
       while (match = re.exec(newString)) {
@@ -82,12 +82,16 @@ AssetRewrite.prototype.processString = function (string) {
           replaceString = match[1].replace(key, this.assetMap[key]);
         }
 
-        newString = newString.replace(new RegExp(match[1], 'g'), replaceString);
+        newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
       }
     }
   }
 
   return newString;
 };
+
+function escapeRegExp(string) {
+  return string.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+}
 
 module.exports = AssetRewrite;

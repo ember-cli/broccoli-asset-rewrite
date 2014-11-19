@@ -6,6 +6,8 @@ function AssetRewrite(inputTree, options) {
     return new AssetRewrite(inputTree, options);
   }
 
+  Filter.call(this, inputTree, options);
+
   options = options || {};
 
   this.inputTree = inputTree;

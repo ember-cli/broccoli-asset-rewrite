@@ -69,4 +69,38 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('rewrites relative urls', function () {
+    var sourcePath = 'tests/fixtures/relative-urls';
+    var tree = rewrite(sourcePath + '/input', {
+      assetMap: {
+        'foo/bar/widget.js': 'blahzorz-1.js',
+        'images/sample.png': 'images/fingerprinted-sample.png',
+        'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png'
+      }
+    });
+
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('rewrites relative urls with prepend', function () {
+    var sourcePath = 'tests/fixtures/relative-urls-prepend';
+    var tree = rewrite(sourcePath + '/input', {
+      assetMap: {
+        'foo/bar/widget.js': 'blahzorz-1.js',
+        'images/sample.png': 'images/fingerprinted-sample.png',
+        'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+
+  });
 });

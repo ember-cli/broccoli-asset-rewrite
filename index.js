@@ -29,21 +29,29 @@ AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relative
  * @param relativePath
  * @returns {boolean}
  */
+
 AssetRewrite.prototype.canProcessFile = function(relativePath) {
-  if (this.inverseAssetMap == null) {
+  if (!this.inverseAssetMap) {
     var inverseAssetMap = {};
     var assetMap = this.assetMap;
-    Object.keys(assetMap).forEach(function(key){
+
+    Object.keys(assetMap).forEach(function(key) {
       var value = assetMap[key];
       inverseAssetMap[value] = key;
     }, this);
+
     this.inverseAssetMap = inverseAssetMap;
   }
-  // relativePath can be an unfingerprinted file name or a fingerprinted file name
-  // check that neither of these variations are being ignored
+
+  /*
+   * relativePath can be fingerprinted or not.
+   * Check that neither of these variations are being ignored
+   */
+
   if (this.ignore.indexOf(relativePath) !== -1 || this.ignore.indexOf(this.inverseAssetMap[relativePath]) !== -1) {
     return false;
   }
+
   return Filter.prototype.canProcessFile.apply(this, arguments);
 }
 

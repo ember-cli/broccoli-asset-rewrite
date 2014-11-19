@@ -1,4 +1,5 @@
 var Filter = require('broccoli-filter');
+var relative = require('relative');
 
 function AssetRewrite(inputTree, options) {
   if (!(this instanceof AssetRewrite)) {
@@ -55,7 +56,7 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
   return Filter.prototype.canProcessFile.apply(this, arguments);
 }
 
-AssetRewrite.prototype.processString = function (string) {
+AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
   var newString = string;
 
   /*
@@ -76,22 +77,47 @@ AssetRewrite.prototype.processString = function (string) {
    * ["\'\\)> ]{1} - Match one of "'( > exactly one time
    */
 
+  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
+  var match = null;
+
+  while (match = re.exec(newString)) {
+    var replaceString = '';
+
+    if (this.prepend && this.prepend !== '') {
+      replaceString = this.prepend + replacementPath;
+    } else {
+      replaceString = match[1].replace(assetPath, replacementPath);
+    }
+
+    newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
+  }
+
+  return newString;
+};
+
+AssetRewrite.prototype.processString = function (string, relativePath) {
+  var newString = string;
+
   for (var key in this.assetMap) {
     if (this.assetMap.hasOwnProperty(key)) {
-      var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(key) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
-      var match = null;
+      /*
+       * Rewrite absolute URLs
+       */
 
-      while (match = re.exec(newString)) {
-        var replaceString = '';
+      newString = this.rewriteAssetPath(newString, key, this.assetMap[key]);
 
-        if (this.prepend && this.prepend !== '') {
-          replaceString = this.prepend + this.assetMap[key];
-        } else {
-          replaceString = match[1].replace(key, this.assetMap[key]);
-        }
+      /*
+       * Rewrite relative URLs. If there is a prepend, use the full absolute path.
+       */
 
-        newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
+      var pathDiff = relative(relativePath, key);
+      var replacementDiff = relative(relativePath, this.assetMap[key]);
+
+      if (this.prepend && this.prepend !== '') {
+        replacementDiff = this.assetMap[key];
       }
+
+      newString = this.rewriteAssetPath(newString, pathDiff, replacementDiff);
     }
   }
 

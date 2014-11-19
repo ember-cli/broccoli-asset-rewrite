@@ -1,6 +1,6 @@
 {
   "name": "broccoli-asset-rewrite",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "broccoli plugin to rewrite a source tree from an asset map.",
   "main": "index.js",
   "scripts": {

@@ -103,4 +103,23 @@ describe('broccoli-asset-rev', function() {
     });
 
   });
+
+  it('replaces the correct match for the file extension', function () {
+    var sourcePath = 'tests/fixtures/extensions';
+
+    var tree = rewrite(sourcePath + '/input', {
+      assetMap: {
+        'fonts/roboto-regular.eot': 'fonts/roboto-regular-f1.eot',
+        'fonts/roboto-regular.woff': 'fonts/roboto-regular-f3.woff',
+        'fonts/roboto-regular.ttf': 'fonts/roboto-regular-f4.ttf',
+        'fonts/roboto-regular.svg': 'fonts/roboto-regular-f5.svg',
+        'fonts/roboto-regular.woff2': 'fonts/roboto-regular-f2.woff2'
+      }
+    });
+
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

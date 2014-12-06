@@ -16,6 +16,8 @@ function AssetRewrite(inputTree, options) {
   this.prepend = options.prepend || '';
   this.description = options.description;
   this.ignore = options.ignore || []; // files to ignore
+
+  this.assetMapKeys = null;
 }
 
 AssetRewrite.prototype = Object.create(Filter.prototype);
@@ -34,6 +36,10 @@ AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relative
  */
 
 AssetRewrite.prototype.canProcessFile = function(relativePath) {
+  if (!this.assetMapKeys) {
+    this.generateAssetMapKeys();
+  }
+
   if (!this.inverseAssetMap) {
     var inverseAssetMap = {};
     var assetMap = this.assetMap;
@@ -100,7 +106,9 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
 AssetRewrite.prototype.processString = function (string, relativePath) {
   var newString = string;
 
-  for (var key in this.assetMap) {
+  for (var i = 0, keyLength = this.assetMapKeys.length; i < keyLength; i++) {
+    var key = this.assetMapKeys[i];
+
     if (this.assetMap.hasOwnProperty(key)) {
       /*
        * Rewrite absolute URLs
@@ -125,6 +133,24 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
 
   return newString;
 };
+
+AssetRewrite.prototype.generateAssetMapKeys = function () {
+  var keys = Object.keys(this.assetMap);
+
+  keys.sort(function (a, b) {
+    if (a.length < b.length) {
+      return 1;
+    }
+
+    if (a.length > b.length) {
+      return -1;
+    }
+
+    return 0;
+  });
+
+  this.assetMapKeys = keys;
+}
 
 function escapeRegExp(string) {
   return string.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");

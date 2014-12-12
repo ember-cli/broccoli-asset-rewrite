@@ -99,8 +99,9 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
   }
-
-  return newString;
+  return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch){
+    return wholeMatch.replace(assetPath, replacementPath);
+  });
 };
 
 AssetRewrite.prototype.processString = function (string, relativePath) {

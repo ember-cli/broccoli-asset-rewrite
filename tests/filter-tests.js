@@ -122,4 +122,20 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('replaces source map URLs', function () {
+    var sourcePath = 'tests/fixtures/sourcemaps';
+
+    var tree = rewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'the.map' : 'the-other-map',
+        'http://absolute.com/source.map' : 'http://cdn.absolute.com/other-map'
+      }
+    });
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

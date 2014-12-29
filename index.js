@@ -121,8 +121,8 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
        * Rewrite relative URLs. If there is a prepend, use the full absolute path.
        */
 
-      var pathDiff = relative(relativePath, key);
-      var replacementDiff = relative(relativePath, this.assetMap[key]);
+      var pathDiff = relative(relativePath, key).replace(/^\.\//, "");
+      var replacementDiff = relative(relativePath, this.assetMap[key]).replace(/^\.\//, "");
 
       if (this.prepend && this.prepend !== '') {
         replacementDiff = this.assetMap[key];

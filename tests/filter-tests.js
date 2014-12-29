@@ -76,7 +76,8 @@ describe('broccoli-asset-rev', function() {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
-        'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png'
+        'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png',
+        'assets/images/baz.png': 'assets/images/baz-fingerprint.png'
       }
     });
 

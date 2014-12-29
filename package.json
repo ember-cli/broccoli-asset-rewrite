@@ -25,7 +25,7 @@
   "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
   "dependencies": {
     "broccoli-filter": "^0.1.10",
-    "relative": "^1.0.1"
+    "relative": "^1.2.0"
   },
   "devDependencies": {
     "mocha": "~1.20.1",

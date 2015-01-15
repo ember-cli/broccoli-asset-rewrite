@@ -1,5 +1,20 @@
 var Filter = require('broccoli-filter');
-var relative = require('relative');
+var path = require('path');
+
+function normalize(str) {
+  return str.replace(/[\\\/]+/g, '/');
+}
+
+function relative(a, b) {
+  if (/\./.test(path.basename(a))) {
+    a = path.dirname(a);
+  }
+
+  var relativePath = path.relative(a, b);
+  // path.relative might have added back \-s on windows
+  relativePath = normalize(relativePath);
+  return relativePath.charAt(0) !== '.' ? './' + relativePath : relativePath;
+}
 
 function AssetRewrite(inputTree, options) {
   if (!(this instanceof AssetRewrite)) {

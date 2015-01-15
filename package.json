@@ -1,6 +1,6 @@
 {
   "name": "broccoli-asset-rewrite",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "broccoli plugin to rewrite a source tree from an asset map.",
   "main": "index.js",
   "scripts": {
@@ -24,8 +24,7 @@
   },
   "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
   "dependencies": {
-    "broccoli-filter": "^0.1.10",
-    "relative": "^1.2.0"
+    "broccoli-filter": "^0.1.10"
   },
   "devDependencies": {
     "mocha": "~1.20.1",

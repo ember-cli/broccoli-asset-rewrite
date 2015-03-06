@@ -102,9 +102,17 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
 
   var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
   var match = null;
+  /*
+   * This is to ignore matches that should not be changed
+   * Any URL encoded match that would be ignored above will be ignored by this: "'()=\
+   */
+  var ignoreLibraryCode = new RegExp('(%22|%27|%5C|%28|%29|%3D)[^"\'\\(\\)=]*' + escapeRegExp(assetPath));
 
   while (match = re.exec(newString)) {
     var replaceString = '';
+    if (ignoreLibraryCode.exec(match[1])) {
+      continue;
+    }
 
     if (this.prepend && this.prepend !== '') {
       replaceString = this.prepend + replacementPath;

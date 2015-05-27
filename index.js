@@ -109,15 +109,14 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
   var ignoreLibraryCode = new RegExp('(%22|%27|%5C|%28|%29|%3D)[^"\'\\(\\)=]*' + escapeRegExp(assetPath));
 
   while (match = re.exec(newString)) {
-    var replaceString = '';
     if (ignoreLibraryCode.exec(match[1])) {
       continue;
     }
 
+    var replaceString = match[1].replace(assetPath, replacementPath);
+
     if (this.prepend && this.prepend !== '') {
-      replaceString = this.prepend + replacementPath;
-    } else {
-      replaceString = match[1].replace(assetPath, replacementPath);
+      replaceString = this.prepend + replaceString;
     }
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);

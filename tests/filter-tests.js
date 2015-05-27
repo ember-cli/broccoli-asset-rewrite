@@ -105,6 +105,22 @@ describe('broccoli-asset-rev', function() {
 
   });
 
+  it('rewrites svgs with prepend', function () {
+    var sourcePath = 'tests/fixtures/svgs-prepend';
+    var tree = rewrite(sourcePath + '/input', {
+      extensions: ['svg'],
+      assetMap: {
+        'icons.svg': 'icons-fingerprint.svg'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
   it('replaces the correct match for the file extension', function () {
     var sourcePath = 'tests/fixtures/extensions';
 

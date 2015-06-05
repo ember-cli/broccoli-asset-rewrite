@@ -122,8 +122,13 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
   }
-  return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch){
-    return wholeMatch.replace(assetPath, replacementPath);
+  var self = this;
+  return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch) {
+    var replaceString = replacementPath;
+    if (self.prepend && self.prepend !== '' && (!/^sourceMappingURL=(http|https|\/\/)/.test(wholeMatch))) {
+      replaceString = self.prepend + replacementPath;
+    }
+    return wholeMatch.replace(assetPath, replaceString);
   });
 };
 

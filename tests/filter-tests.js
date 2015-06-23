@@ -156,4 +156,21 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('replaces similar named assets in nested directories', function () {
+    var sourcePath = 'tests/fixtures/duplicate-filenames';
+
+    var tree = rewrite(sourcePath + '/input', {
+      replaceExtensions: ['html'],
+      assetMap: {
+        'script.js' : 'foo/script.js',
+        'another-dir/script.js' : 'bar/script.js'
+      },
+      prepend: 'https://mycdn.com/'
+    });
+    builder = new broccoli.Builder(tree);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

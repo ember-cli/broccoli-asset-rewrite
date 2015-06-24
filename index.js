@@ -90,7 +90,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    * ["\'\\(=]{1} - Match one of "'(= exactly one time
    * \\s* - Any amount of white space
    * ( - Starts the first pattern match
-   * [^"\'\\(\\)=]* - Do not match any of ^"'()= 0 or more times
+   * (?:\.\/)? - ignore ./ if it is at the beginning of the path
    * /([.*+?^=!:${}()|\[\]\/\\])/g - Replace .*+?^=!:${}()|[]/\ in filenames with an escaped version for an exact name match
    * [^"\'\\(\\)\\\\>=]* - Do not match any of ^"'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
    * ) - End first pattern match
@@ -100,7 +100,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    * ["\'\\)> ]{1} - Match one of "'( > exactly one time
    */
 
-  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
+  var re = new RegExp('["\'\\(=]{1}\\s*((?:\.\/)?' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
   var match = null;
   /*
    * This is to ignore matches that should not be changed

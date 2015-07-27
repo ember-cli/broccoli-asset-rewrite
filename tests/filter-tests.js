@@ -36,6 +36,7 @@ describe('broccoli-asset-rev', function() {
     var tree = rewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
+        'img.png': 'fingerprinted-img.png',
         'images/sample.png': 'images/fingerprinted-sample.png',
         'fonts/OpenSans/Light/OpenSans-Light.eot': 'fonts/OpenSans/Light/fingerprinted-OpenSans-Light.eot',
         'fonts/OpenSans/Light/OpenSans-Light.woff': 'fonts/OpenSans/Light/fingerprinted-OpenSans-Light.woff',

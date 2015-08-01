@@ -16,18 +16,17 @@ function relative(a, b) {
   return relativePath.charAt(0) !== '.' ? './' + relativePath : relativePath;
 }
 
-function AssetRewrite(inputTree, options) {
+function AssetRewrite(inputNode, options) {
   if (!(this instanceof AssetRewrite)) {
-    return new AssetRewrite(inputTree, options);
+    return new AssetRewrite(inputNode, options);
   }
 
-  Filter.call(this, inputTree, options);
-
   options = options || {};
+  options.extensions = options.replaceExtensions || ['html', 'css'];
 
-  this.inputTree = inputTree;
+  Filter.call(this, inputNode, options);
+
   this.assetMap = options.assetMap || {};
-  this.extensions = options.replaceExtensions || ['html', 'css'];
   this.prepend = options.prepend || '';
   this.description = options.description;
   this.ignore = options.ignore || []; // files to ignore
@@ -179,7 +178,7 @@ AssetRewrite.prototype.generateAssetMapKeys = function () {
   });
 
   this.assetMapKeys = keys;
-}
+};
 
 function escapeRegExp(string) {
   return string.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");

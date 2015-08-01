@@ -1,6 +1,6 @@
 #broccoli-asset-rewrite
 
-[Broccoli](https://github.com/broccolijs/broccoli) plugin to rewrite a source tree from an asset map.
+[Broccoli](https://github.com/broccolijs/broccoli) plugin to rewrite a source node from an asset map.
 
 Turns
 
@@ -27,7 +27,7 @@ npm install broccoli-asset-rewrite --save-dev
 The asset map should have keys of the original names and values of the new names.
 
 ```js
-var assetRewrite = require('broccoli-asset-rewrite');
+var AssetRewrite = require('broccoli-asset-rewrite');
 
 var generatedMap = {
   'assets/appname.css': 'assets/appname-d1d59e0fdcfc183415ab0b72a4f78d9c.css',
@@ -36,7 +36,7 @@ var generatedMap = {
   'logo.png': 'logo-c4ab8191636f0a520d1f7f7a82c455a3.png'
 };
 
-var assetTree = assetRewrite(tree, {
+var assetNode = new AssetRewrite(node, {
   assetMap: generatedMap,
   replaceExtensions: ['html', 'js', 'css'],
   prepend: 'https://subdomain.cloudfront.net/'

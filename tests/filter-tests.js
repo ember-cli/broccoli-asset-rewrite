@@ -4,7 +4,7 @@ var assert   = require('assert');
 var walkSync = require('walk-sync');
 var broccoli = require('broccoli');
 
-var rewrite  = require('..');
+var AssetRewrite  = require('..');
 
 var builder;
 
@@ -33,7 +33,7 @@ describe('broccoli-asset-rev', function() {
 
   it('uses the provided assetMap to replace strings', function(){
     var sourcePath = 'tests/fixtures/basic';
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
@@ -48,7 +48,7 @@ describe('broccoli-asset-rev', function() {
       }
     });
 
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function(graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
@@ -56,7 +56,7 @@ describe('broccoli-asset-rev', function() {
 
   it('ignore option tell filter what files should not be processed', function(){
     var sourcePath = 'tests/fixtures/with-ignore';
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
@@ -64,7 +64,7 @@ describe('broccoli-asset-rev', function() {
       ignore: ['ignore-this-file.html']
     });
 
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function(graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
@@ -72,7 +72,7 @@ describe('broccoli-asset-rev', function() {
 
   it('rewrites relative urls', function () {
     var sourcePath = 'tests/fixtures/relative-urls';
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
@@ -81,7 +81,7 @@ describe('broccoli-asset-rev', function() {
       }
     });
 
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
@@ -89,7 +89,7 @@ describe('broccoli-asset-rev', function() {
 
   it('rewrites relative urls with prepend', function () {
     var sourcePath = 'tests/fixtures/relative-urls-prepend';
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
@@ -98,7 +98,7 @@ describe('broccoli-asset-rev', function() {
       prepend: 'https://cloudfront.net/'
     });
 
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
@@ -108,7 +108,7 @@ describe('broccoli-asset-rev', function() {
   it('replaces the correct match for the file extension', function () {
     var sourcePath = 'tests/fixtures/extensions';
 
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'fonts/roboto-regular.eot': 'fonts/roboto-regular-f1.eot',
         'fonts/roboto-regular.woff': 'fonts/roboto-regular-f3.woff',
@@ -118,7 +118,7 @@ describe('broccoli-asset-rev', function() {
       }
     });
 
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
@@ -127,14 +127,14 @@ describe('broccoli-asset-rev', function() {
   it('replaces source map URLs', function () {
     var sourcePath = 'tests/fixtures/sourcemaps';
 
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       replaceExtensions: ['js'],
       assetMap: {
         'the.map' : 'the-other-map',
         'http://absolute.com/source.map' : 'http://cdn.absolute.com/other-map'
       }
     });
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
@@ -143,7 +143,7 @@ describe('broccoli-asset-rev', function() {
   it('replaces source map URLs with prepend', function () {
     var sourcePath = 'tests/fixtures/sourcemaps-prepend';
 
-    var tree = rewrite(sourcePath + '/input', {
+    var node = new AssetRewrite(sourcePath + '/input', {
       replaceExtensions: ['js'],
       assetMap: {
         'the.map' : 'the-other-map',
@@ -151,7 +151,7 @@ describe('broccoli-asset-rev', function() {
       },
       prepend: 'https://cloudfront.net/'
     });
-    builder = new broccoli.Builder(tree);
+    builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });

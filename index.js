@@ -22,13 +22,15 @@ function AssetRewrite(inputNode, options) {
   }
 
   options = options || {};
-  options.extensions = options.replaceExtensions || ['html', 'css'];
 
-  Filter.call(this, inputNode, options);
+  Filter.call(this, inputNode, {
+    extensions: options.replaceExtensions || ['html', 'css'],
+    // We should drop support for `description` in the next major release
+    annotation: options.description || options.annotation
+  });
 
   this.assetMap = options.assetMap || {};
   this.prepend = options.prepend || '';
-  this.description = options.description;
   this.ignore = options.ignore || []; // files to ignore
 
   this.assetMapKeys = null;

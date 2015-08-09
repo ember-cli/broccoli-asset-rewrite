@@ -49,3 +49,4 @@ var assetNode = new AssetRewrite(node, {
   - `replaceExtensions` - Default: `['html', 'css']` - The file types to replace source code with new checksum file names.
   - `prepend` - Default: `''` - A string to prepend to all of the assets. Useful for CDN urls like `https://subdomain.cloudfront.net/`
   - `ignore` - Default: `[]` - Ignore files from being rewritten.
+  - `annotation` - Default: null - A human-readable description for this plugin instance.

@@ -156,4 +156,48 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('maintains fragments', function () {
+    var sourcePath = 'tests/fixtures/fragments';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'images/defs.svg': 'images/fingerprinted-defs.svg'
+      }
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('maintains fragments with prepend', function () {
+    var sourcePath = 'tests/fixtures/fragments-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'images/defs.svg': 'images/fingerprinted-defs.svg'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('replaces absolute URLs with prepend', function () {
+    var sourcePath = 'tests/fixtures/absolute-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'my-image.png': 'my-image-fingerprinted.png'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

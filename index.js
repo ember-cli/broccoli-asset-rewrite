@@ -116,10 +116,11 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
       continue;
     }
 
+    replaceString = match[1].replace(assetPath, replacementPath);
+
     if (this.prepend && this.prepend !== '') {
-      replaceString = this.prepend + replacementPath;
-    } else {
-      replaceString = match[1].replace(assetPath, replacementPath);
+      var removeLeadingSlashRegex = new RegExp('^/?(.*)$');
+      replaceString = this.prepend + removeLeadingSlashRegex.exec(replaceString)[1];
     }
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);

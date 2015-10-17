@@ -39,12 +39,6 @@ function AssetRewrite(inputNode, options) {
 AssetRewrite.prototype = Object.create(Filter.prototype);
 AssetRewrite.prototype.constructor = AssetRewrite;
 
-AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {
-  this._cache = {};
-
-  return Filter.prototype.processAndCacheFile.apply(this, arguments);
-}
-
 /**
  * Checks that file is not being ignored and destination doesn't already have a file
  * @param relativePath
@@ -52,10 +46,6 @@ AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relative
  */
 
 AssetRewrite.prototype.canProcessFile = function(relativePath) {
-  if (!this.assetMapKeys) {
-    this.generateAssetMapKeys();
-  }
-
   if (!this.inverseAssetMap) {
     var inverseAssetMap = {};
     var assetMap = this.assetMap;
@@ -80,8 +70,26 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
   return Filter.prototype.canProcessFile.apply(this, arguments);
 }
 
-AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
-  var newString = string;
+AssetRewrite.prototype.processString = function (string, relativePath) {
+  var prepend = this.prepend;
+  var absMap = this.assetMap;
+  var absKeys = this.getAssetMapKeys();
+
+  var relMap = {};
+  var relKeys = absKeys.map(function(path) {
+    var relPath = relative(relativePath, path).replace(/^\.\//, "");
+
+    var relReplacement = relative(relativePath, absMap[path]).replace(/^\.\//, "");
+    if (prepend && prepend !== '') {
+      relReplacement = absMap[path];
+    }
+
+    relMap[relPath] = relReplacement;
+
+    return relPath
+  });
+
+  var assetGroup = '(' + absKeys.concat(relKeys).map(function(p) { return escapeRegExp(p); }).join('|') + ')';
 
   /*
    * Replace all of the assets with their new fingerprint name
@@ -100,71 +108,39 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    * \\s* - Any amount of white space
    * ["\'\\)> ]{1} - Match one of "'( > exactly one time
    */
+  var assetRE = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + assetGroup + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
 
-  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
-  var match = null;
+  var sourceMapRE = new RegExp('sourceMappingURL=(' + assetGroup + ')');
+
   /*
    * This is to ignore matches that should not be changed
    * Any URL encoded match that would be ignored above will be ignored by this: "'()=\
    */
-  var ignoreLibraryCode = new RegExp('(%22|%27|%5C|%28|%29|%3D)[^"\'\\(\\)=]*' + escapeRegExp(assetPath));
+  var ignoreLibraryCode = new RegExp('(%22|%27|%5C|%28|%29|%3D)[^"\'\\(\\)=]*' + assetGroup);
 
-  while (match = re.exec(newString)) {
-    var replaceString = '';
-    if (ignoreLibraryCode.exec(match[1])) {
-      continue;
+  /*
+   * This is to detect protocol-relative and absolute URLs.
+   * These URLs will not have anything prepended.
+   */
+  var fullURL = new RegExp('^([a-z][a-z0-9+\\-\\.]*)?://', 'i');
+
+  var replacer = function(wholeMatch, found, assetPath) {
+    if (ignoreLibraryCode.exec(found)) {
+      return wholeMatch;
     }
 
-    if (this.prepend && this.prepend !== '') {
-      replaceString = this.prepend + replacementPath;
-    } else {
-      replaceString = match[1].replace(assetPath, replacementPath);
+    var replacement = absMap[assetPath] || relMap[assetPath];
+    if (prepend && prepend !== '' && !fullURL.exec(found)) {
+      replacement = prepend + replacement;
     }
 
-    newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
-  }
-  var self = this;
-  return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch) {
-    var replaceString = replacementPath;
-    if (self.prepend && self.prepend !== '' && (!/^sourceMappingURL=(http|https|\/\/)/.test(wholeMatch))) {
-      replaceString = self.prepend + replacementPath;
-    }
-    return wholeMatch.replace(assetPath, replaceString);
-  });
+    return wholeMatch.replace(assetPath, replacement);
+  };
+
+  return string.replace(assetRE, replacer).replace(sourceMapRE, replacer);
 };
 
-AssetRewrite.prototype.processString = function (string, relativePath) {
-  var newString = string;
-
-  for (var i = 0, keyLength = this.assetMapKeys.length; i < keyLength; i++) {
-    var key = this.assetMapKeys[i];
-
-    if (this.assetMap.hasOwnProperty(key)) {
-      /*
-       * Rewrite absolute URLs
-       */
-
-      newString = this.rewriteAssetPath(newString, key, this.assetMap[key]);
-
-      /*
-       * Rewrite relative URLs. If there is a prepend, use the full absolute path.
-       */
-
-      var pathDiff = relative(relativePath, key).replace(/^\.\//, "");
-      var replacementDiff = relative(relativePath, this.assetMap[key]).replace(/^\.\//, "");
-
-      if (this.prepend && this.prepend !== '') {
-        replacementDiff = this.assetMap[key];
-      }
-
-      newString = this.rewriteAssetPath(newString, pathDiff, replacementDiff);
-    }
-  }
-
-  return newString;
-};
-
-AssetRewrite.prototype.generateAssetMapKeys = function () {
+AssetRewrite.prototype.getAssetMapKeys = function () {
   var keys = Object.keys(this.assetMap);
 
   keys.sort(function (a, b) {
@@ -179,7 +155,7 @@ AssetRewrite.prototype.generateAssetMapKeys = function () {
     return 0;
   });
 
-  this.assetMapKeys = keys;
+  return keys;
 };
 
 function escapeRegExp(string) {

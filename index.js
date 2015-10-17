@@ -39,12 +39,6 @@ function AssetRewrite(inputNode, options) {
 AssetRewrite.prototype = Object.create(Filter.prototype);
 AssetRewrite.prototype.constructor = AssetRewrite;
 
-AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {
-  this._cache = {};
-
-  return Filter.prototype.processAndCacheFile.apply(this, arguments);
-}
-
 /**
  * Checks that file is not being ignored and destination doesn't already have a file
  * @param relativePath

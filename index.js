@@ -1,5 +1,6 @@
 var Filter = require('broccoli-filter');
 var path = require('path');
+var Cache = require('broccoli-filter/lib/cache');
 
 function normalize(str) {
   return str.replace(/[\\\/]+/g, '/');
@@ -40,7 +41,7 @@ AssetRewrite.prototype = Object.create(Filter.prototype);
 AssetRewrite.prototype.constructor = AssetRewrite;
 
 AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {
-  this._cache = {};
+  this._cache = new Cache();
 
   return Filter.prototype.processAndCacheFile.apply(this, arguments);
 }

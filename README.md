@@ -50,3 +50,5 @@ var assetNode = new AssetRewrite(node, {
   - `prepend` - Default: `''` - A string to prepend to all of the assets. Useful for CDN urls like `https://subdomain.cloudfront.net/`
   - `ignore` - Default: `[]` - Ignore files from being rewritten.
   - `annotation` - Default: null - A human-readable description for this plugin instance.
+
+[![ghit.me](https://ghit.me/badge.svg?repo=rickharrison/broccoli-asset-rewrite)](https://ghit.me/repo/rickharrison/broccoli-asset-rewrite)

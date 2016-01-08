@@ -33,7 +33,7 @@ describe('broccoli-asset-rev', function() {
 
   it('uses the provided assetMap to replace strings', function(){
     var sourcePath = 'tests/fixtures/basic';
-    var node = new AssetRewrite(sourcePath + '/input', {
+    var node = AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'images/sample.png': 'images/fingerprinted-sample.png',

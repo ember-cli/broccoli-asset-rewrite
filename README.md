@@ -1,6 +1,6 @@
 #broccoli-asset-rewrite
 
-![Build Status](https://circleci.com/gh/rickharrison/broccoli-asset-rewrite.svg?style=shield)
+[![CircleCI](https://img.shields.io/circleci/project/rickharrison/broccoli-asset-rewrite.svg)](https://circleci.com/gh/rickharrison/broccoli-asset-rewrite)
 [![codecov.io](https://codecov.io/github/rickharrison/broccoli-asset-rewrite/coverage.svg?branch=master&precision=2)](https://codecov.io/github/rickharrison/broccoli-asset-rewrite?branch=master)
 [![npm](https://img.shields.io/npm/v/broccoli-asset-rewrite.svg)](https://www.npmjs.com/package/broccoli-asset-rewrite)
 

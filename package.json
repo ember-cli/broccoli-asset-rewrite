@@ -4,7 +4,8 @@
   "description": "broccoli plugin to rewrite a source tree from an asset map.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests"
+    "test": "mocha tests",
+    "test:cover": "istanbul cover ./node_modules/mocha/bin/_mocha tests"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,8 @@
   },
   "devDependencies": {
     "broccoli": "^0.16.9",
+    "codecov.io": "^0.1.6",
+    "istanbul": "^0.4.1",
     "mocha": "~1.20.1",
     "walk-sync": "~0.1.2"
   }

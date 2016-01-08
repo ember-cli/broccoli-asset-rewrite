@@ -2,7 +2,7 @@
 
 ![Build Status](https://circleci.com/gh/rickharrison/broccoli-asset-rewrite.svg?style=shield)
 [![codecov.io](https://codecov.io/github/rickharrison/broccoli-asset-rewrite/coverage.svg?branch=master&precision=2)](https://codecov.io/github/rickharrison/broccoli-asset-rewrite?branch=master)
-[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/broccoli-asset-rewrite)
+[![npm](https://img.shields.io/npm/v/broccoli-asset-rewrite.svg)](https://www.npmjs.com/package/broccoli-asset-rewrite)
 
 [Broccoli](https://github.com/broccolijs/broccoli) plugin to rewrite a source node from an asset map.
 

@@ -6,4 +6,4 @@ test:
   override:
     - npm run test:cover
   post:
-    - cat ./coverage/lcov.info | ./node_modules/.bin/codecov
+    - ./node_modules/.bin/codecov

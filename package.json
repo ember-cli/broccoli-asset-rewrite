@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
   "dependencies": {
-    "broccoli-filter": "^1.2.3"
+    "broccoli-persistent-filter": "^1.1.8",
+    "json-stable-stringify": "^1.0.1"
   },
   "devDependencies": {
     "broccoli": "^0.16.9",

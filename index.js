@@ -1,6 +1,5 @@
 var Filter = require('broccoli-persistent-filter');
 var path = require('path');
-var stringify = require('json-stable-stringify');
 
 function normalize(str) {
   return str.replace(/[\\\/]+/g, '/');
@@ -24,7 +23,7 @@ function AssetRewrite(inputNode, options) {
 
   options = options || {};
 
-  if (typeof options.persist === 'undefined') {
+  if (typeof options.persist === undefined) {
     options.persist = true;
   }
 
@@ -41,25 +40,13 @@ function AssetRewrite(inputNode, options) {
 
   this.assetMapKeys = null;
   this.options = options;
-}
+};
 
 AssetRewrite.prototype = Object.create(Filter.prototype);
 AssetRewrite.prototype.constructor = AssetRewrite;
 
 AssetRewrite.prototype.baseDir = function () {
   return __dirname;
-};
-
-AssetRewrite.prototype.optionsHash = function () {
-  if (!this._optionsHash) {
-    this._optionsHash = stringify(this.options);
-  }
-
-  return this._optionsHash;
-};
-
-AssetRewrite.prototype.cacheKeyProcessString = function(string, relativePath) {
-  return this.optionsHash() + Filter.prototype.cacheKeyProcessString.call(this, string, relativePath);
 };
 
 AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {

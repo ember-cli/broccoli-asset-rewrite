@@ -116,10 +116,11 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
       continue;
     }
 
-    if (this.prepend && this.prepend !== '') {
-      replaceString = this.prepend + replacementPath;
-    } else {
-      replaceString = match[1].replace(assetPath, replacementPath);
+    replaceString = match[1].replace(assetPath, replacementPath);
+
+    if (this.prepend && replaceString.indexOf(this.prepend) !== 0) {
+      var removeLeadingSlashRegex = new RegExp('^/?(.*)$');
+      replaceString = this.prepend + removeLeadingSlashRegex.exec(replaceString)[1];
     }
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
@@ -127,7 +128,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
   var self = this;
   return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch) {
     var replaceString = replacementPath;
-    if (self.prepend && self.prepend !== '' && (!/^sourceMappingURL=(http|https|\/\/)/.test(wholeMatch))) {
+    if (self.prepend && (!/^sourceMappingURL=(http|https|\/\/)/.test(wholeMatch))) {
       replaceString = self.prepend + replacementPath;
     }
     return wholeMatch.replace(assetPath, replaceString);

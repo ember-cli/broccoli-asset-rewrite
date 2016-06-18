@@ -92,6 +92,7 @@ describe('broccoli-asset-rev', function() {
     var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: {
         'foo/bar/widget.js': 'blahzorz-1.js',
+        'dont/fingerprint/me.js': 'dont/fingerprint/me.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
         'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png'
       },
@@ -151,6 +152,51 @@ describe('broccoli-asset-rev', function() {
       },
       prepend: 'https://cloudfront.net/'
     });
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('maintains fragments', function () {
+    var sourcePath = 'tests/fixtures/fragments';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'images/defs.svg': 'images/fingerprinted-defs.svg'
+      }
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('maintains fragments with prepend', function () {
+    var sourcePath = 'tests/fixtures/fragments-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'images/defs.svg': 'images/fingerprinted-defs.svg'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('replaces absolute URLs with prepend', function () {
+    var sourcePath = 'tests/fixtures/absolute-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'my-image.png': 'my-image-fingerprinted.png',
+        'dont/fingerprint/me.js': 'dont/fingerprint/me.js'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
     builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');

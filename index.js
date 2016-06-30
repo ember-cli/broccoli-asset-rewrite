@@ -119,8 +119,8 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
     replaceString = match[1].replace(assetPath, replacementPath);
 
     if (this.prepend && replaceString.indexOf(this.prepend) !== 0) {
-      var removeLeadingSlashRegex = new RegExp('^/?(.*)$');
-      replaceString = this.prepend + removeLeadingSlashRegex.exec(replaceString)[1];
+      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$');
+      replaceString = this.prepend + removeLeadingRelativeOrSlashRegex.exec(replaceString)[2];
     }
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);

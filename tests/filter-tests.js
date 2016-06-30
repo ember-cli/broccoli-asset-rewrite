@@ -94,7 +94,8 @@ describe('broccoli-asset-rev', function() {
         'foo/bar/widget.js': 'blahzorz-1.js',
         'dont/fingerprint/me.js': 'dont/fingerprint/me.js',
         'images/sample.png': 'images/fingerprinted-sample.png',
-        'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png'
+        'assets/images/foobar.png': 'assets/images/foobar-fingerprint.png',
+        'img/saturation.png': 'assets/img/saturation-fingerprint.png'
       },
       prepend: 'https://cloudfront.net/'
     });

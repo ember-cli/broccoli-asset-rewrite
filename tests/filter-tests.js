@@ -203,4 +203,19 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('handles multiple references to the same url', function () {
+    var sourcePath = 'tests/fixtures/multiple-urls-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'images/defs.svg': 'assets/images/defs.svg'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

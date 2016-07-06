@@ -1,0 +1,4 @@
+.sample-img-small   { width:  50px; height:  50px; background-image:url(https://cloudfront.net/assets/images/defs.svg#smallish) }
+.sample-img-medium  { width:  80px; height:  80px; background-image:url(https://cloudfront.net/assets/images/defs.svg#smallish) }
+.sample-img-large   { width: 120px; height: 120px; background-image:url(https://cloudfront.net/assets/images/defs.svg#largish) }
+.sample-img-xlarge  { width: 240px; height: 240px; background-image:url(https://cloudfront.net/assets/images/defs.svg#largish) }

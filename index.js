@@ -82,8 +82,6 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
 }
 
 AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
-  var newString = string;
-
   /*
    * Replace all of the assets with their new fingerprint name
    *
@@ -102,7 +100,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    * ["\'\\)> ]{1} - Match one of "'( > exactly one time
    */
 
-  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
+  var re = new RegExp('["\'(=]\\s*([^"\'()=]*' + escapeRegExp(assetPath) + '[^"\'()\\\\>=]*)\\s*\\\\*\\s*["\')> ]', 'g');
   var match = null;
   /*
    * This is to ignore matches that should not be changed
@@ -110,22 +108,25 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    */
   var ignoreLibraryCode = new RegExp('(%22|%27|%5C|%28|%29|%3D)[^"\'\\(\\)=]*' + escapeRegExp(assetPath));
 
-  while (match = re.exec(newString)) {
-    var replaceString = '';
-    if (ignoreLibraryCode.exec(match[1])) {
-      continue;
-    }
-
-    replaceString = match[1].replace(assetPath, replacementPath);
-
-    if (this.prepend && replaceString.indexOf(this.prepend) !== 0) {
-      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$');
-      replaceString = this.prepend + removeLeadingRelativeOrSlashRegex.exec(replaceString)[2];
-    }
-
-    newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
-  }
   var self = this;
+  var newString = string.replace(re, function(match, p1) {
+    if (ignoreLibraryCode.exec(match)) {
+      return match;
+    }
+
+    var replaceString = p1;
+
+    if (p1.indexOf(replacementPath) === -1) {
+      replaceString = p1.replace(assetPath, replacementPath);
+    }
+
+    if (self.prepend && replaceString.indexOf(self.prepend) !== 0) {
+      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*');
+      replaceString = self.prepend + replaceString.replace(removeLeadingRelativeOrSlashRegex, '');
+    }
+
+    return match.replace(p1, replaceString);
+  });
   return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch) {
     var replaceString = replacementPath;
     if (self.prepend && (!/^sourceMappingURL=(http|https|\/\/)/.test(wholeMatch))) {

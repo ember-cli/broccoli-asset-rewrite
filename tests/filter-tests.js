@@ -203,4 +203,19 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('handles URLs with query parameters in them', function () {
+    var sourcePath = 'tests/fixtures/query-strings';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'foo/bar/widget.js': 'foo/bar/fingerprinted-widget.js',
+        'script-tag-with-query-parameters.html': 'script-tag-with-query-parameters.html',
+      },
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

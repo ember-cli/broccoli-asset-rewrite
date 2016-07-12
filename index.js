@@ -96,13 +96,14 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    * /([.*+?^=!:${}()|\[\]\/\\])/g - Replace .*+?^=!:${}()|[]/\ in filenames with an escaped version for an exact name match
    * [^"\'\\(\\)\\\\>=]* - Do not match any of ^"'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
    * ) - End first pattern match
+   * (\\?[^"\'\\)> ]*)? - Allow for query parameters to be present after the URL of an asset
    * \\s* - Any amount of white space
    * [\\\\]* - Allow any amount of \ - For handlebars compilation (includes \\\)
    * \\s* - Any amount of white space
    * ["\'\\)> ]{1} - Match one of "'( > exactly one time
    */
 
-  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
+  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)(\\?[^"\'\\)> ]*)?\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
   var match = null;
   /*
    * This is to ignore matches that should not be changed

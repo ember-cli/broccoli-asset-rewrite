@@ -89,27 +89,26 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    *
    * Uses a regular expression to find assets in html tags, css backgrounds, handlebars pre-compiled templates, etc.
    *
-   * ["\'\\(=]{1} - Match one of "'(= exactly one time
+   * ["\'(=] - Match one of "'(= exactly one time
    * \\s* - Any amount of white space
-   * ( - Starts the first pattern match
-   * [^"\'\\(\\)=]* - Do not match any of ^"'()= 0 or more times
-   * /([.*+?^=!:${}()|\[\]\/\\])/g - Replace .*+?^=!:${}()|[]/\ in filenames with an escaped version for an exact name match
-   * [^"\'\\(\\)\\\\>=]* - Do not match any of ^"'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
-   * ) - End first pattern match
-   * (\\?[^"\'\\)> ]*)? - Allow for query parameters to be present after the URL of an asset
+   * ( - Starts the first capture group
+   * [^"\'()=]* - Do not match any of ^"'()= 0 or more times
+   * [^"\'()\\>=]* - Do not match any of ^"'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
+   * ) - End first capture group
+   * (\\?[^"\')> ]*)? - Allow for query parameters to be present after the URL of an asset
    * \\s* - Any amount of white space
-   * [\\\\]* - Allow any amount of \ - For handlebars compilation (includes \\\)
+   * \\\\* - Allow any amount of \ - For handlebars compilation (includes \\\)
    * \\s* - Any amount of white space
-   * ["\'\\)> ]{1} - Match one of "'( > exactly one time
+   * ["\')> ] - Match one of "'( > exactly one time
    */
 
-  var re = new RegExp('["\'\\(=]{1}\\s*([^"\'\\(\\)=]*' + escapeRegExp(assetPath) + '[^"\'\\(\\)\\\\>=]*)(\\?[^"\'\\)> ]*)?\\s*[\\\\]*\\s*["\'\\)> ]{1}', 'g');
+  var re = new RegExp('["\'(=]\\s*([^"\'()=]*' + escapeRegExp(assetPath) + '[^"\'()\\>=]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')> ]', 'g');
   var match = null;
   /*
    * This is to ignore matches that should not be changed
    * Any URL encoded match that would be ignored above will be ignored by this: "'()=\
    */
-  var ignoreLibraryCode = new RegExp('(%22|%27|%5C|%28|%29|%3D)[^"\'\\(\\)=]*' + escapeRegExp(assetPath));
+  var ignoreLibraryCode = new RegExp('%(22|27|5C|28|29|3D)[^"\'()=]*' + escapeRegExp(assetPath));
 
   while (match = re.exec(newString)) {
     var replaceString = '';
@@ -185,6 +184,9 @@ AssetRewrite.prototype.generateAssetMapKeys = function () {
   this.assetMapKeys = keys;
 };
 
+/*
+ * /([.*+?^=!:${}()|\[\]\/\\])/g - Replace .*+?^=!:${}()|[]/\ in filenames with an escaped version for an exact name match
+ */
 function escapeRegExp(string) {
   return string.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
 }

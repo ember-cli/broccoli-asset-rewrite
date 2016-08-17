@@ -82,6 +82,7 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
 }
 
 AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
+
   var newString = string;
 
   /*
@@ -125,6 +126,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
   }
+
   var self = this;
   return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch) {
     var replaceString = replacementPath;

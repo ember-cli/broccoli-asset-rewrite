@@ -218,4 +218,19 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+
+  it('handles JavaScript files in a reasonable amount of time', function () {
+    this.timeout(500);
+    var sourcePath = 'tests/fixtures/js-perf';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: JSON.parse(fs.readFileSync(__dirname + '/fixtures/js-perf/asset-map.json')),
+      replaceExtensions: ['js'],
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    })
+  });
 });

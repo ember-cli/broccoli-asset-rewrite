@@ -83,6 +83,9 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
 
 AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
 
+  // Early exit: does the file contain the asset path?
+  if (string.indexOf(assetPath) === -1) return string;
+
   var newString = string;
 
   /*

@@ -123,7 +123,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
     replaceString = match[1].replace(assetPath, replacementPath);
 
     if (this.prepend && replaceString.indexOf(this.prepend) !== 0) {
-      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$');
+      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$', 'm');
       replaceString = this.prepend + removeLeadingRelativeOrSlashRegex.exec(replaceString)[2];
     }
 

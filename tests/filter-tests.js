@@ -130,9 +130,11 @@ describe('broccoli-asset-rev', function() {
     var sourcePath = 'tests/fixtures/sourcemaps';
 
     var node = new AssetRewrite(sourcePath + '/input', {
-      replaceExtensions: ['js'],
+      replaceExtensions: ['js', 'css'],
       assetMap: {
         'the.map' : 'the-other-map',
+        'styles.css' : 'styles-fp1.css',
+        'styles.css.map' : 'styles.css-fp2.map',
         'http://absolute.com/source.map' : 'http://cdn.absolute.com/other-map'
       }
     });

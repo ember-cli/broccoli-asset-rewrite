@@ -135,6 +135,8 @@ describe('broccoli-asset-rev', function() {
         'the.map' : 'the-other-map',
         'styles.css' : 'styles-fp1.css',
         'styles.css.map' : 'styles.css-fp2.map',
+        'scripts.js.map' : 'scripts.js-fp3.map',
+        'scripts.js' : 'scripts-fp4.js',
         'http://absolute.com/source.map' : 'http://cdn.absolute.com/other-map'
       }
     });

@@ -82,7 +82,6 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
 }
 
 AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
-
   // Early exit: does the file contain the asset path?
   if (string.indexOf(assetPath) === -1) return string;
 
@@ -141,6 +140,24 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
 };
 
 AssetRewrite.prototype.processString = function (string, relativePath) {
+  if (/\.js$/.test(relativePath)) {
+    return this.processJS(string, relativePath);
+  } else if (/\.css$/.test(relativePath)) {
+    return this.processCSS(string, relativePath);
+  } else {
+    return this.processOther(string, relativePath);
+  }
+};
+
+AssetRewrite.prototype.processJS = function(string, relativePath) {
+  return string;
+}
+
+AssetRewrite.prototype.processCSS = function(string, relativePath) {
+  return this.processOther(string, relativePath); // TODO: Implement a more specialised parser
+}
+
+AssetRewrite.prototype.processOther = function(string, relativePath) {
   var newString = string;
 
   for (var i = 0, keyLength = this.assetMapKeys.length; i < keyLength; i++) {
@@ -150,7 +167,6 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
       /*
        * Rewrite absolute URLs
        */
-
       newString = this.rewriteAssetPath(newString, key, this.assetMap[key]);
 
       /*
@@ -169,7 +185,7 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
   }
 
   return newString;
-};
+}
 
 AssetRewrite.prototype.generateAssetMapKeys = function () {
   var keys = Object.keys(this.assetMap);

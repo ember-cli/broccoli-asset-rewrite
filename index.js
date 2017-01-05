@@ -150,7 +150,11 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
 };
 
 AssetRewrite.prototype.processJS = function(string, relativePath) {
-  return string;
+  let newString = string;
+  this.assetMapKeys.forEach((key) => {
+    newString = newString.replace(key, this.assetMap[key]);
+  });
+  return newString;
 }
 
 AssetRewrite.prototype.processCSS = function(string, relativePath) {

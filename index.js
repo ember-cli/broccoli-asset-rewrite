@@ -156,7 +156,8 @@ AssetRewrite.prototype.processJS = function(string, relativePath) {
     prepend = prepend.slice(0, prepend.length - 1); // remove trailing slash if present
   }
   let wordCharRe = /\w/;
-  this.assetMapKeys.forEach((key) => {
+  for (let i = 0; i < this.assetMapKeys.length; i++) {
+    let key = this.assetMapKeys[i];
     let value = this.assetMap[key];
     if (prepend) {
       var re = new RegExp(`\/?` + escapeRegExp(key), 'g');
@@ -171,7 +172,7 @@ AssetRewrite.prototype.processJS = function(string, relativePath) {
       let re = new RegExp(escapeRegExp(key), 'g');
       newString = newString.replace(re, this.assetMap[key]);
     }
-  });
+  }
   return newString;
 }
 

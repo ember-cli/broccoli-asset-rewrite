@@ -221,7 +221,7 @@ describe('broccoli-asset-rev', function() {
 
 
   it('handles JavaScript files in a reasonable amount of time', function () {
-    this.timeout(500);
+    this.timeout(2000);
     var sourcePath = 'tests/fixtures/js-perf';
     var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: JSON.parse(fs.readFileSync(__dirname + '/fixtures/js-perf/asset-map.json')),

@@ -151,8 +151,26 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
 
 AssetRewrite.prototype.processJS = function(string, relativePath) {
   let newString = string;
+  let prepend = this.prepend;
+  if (prepend && prepend[prepend.length - 1] === '/') {
+    prepend = prepend.slice(0, prepend.length - 1); // remove trailing slash if present
+  }
   this.assetMapKeys.forEach((key) => {
-    newString = newString.replace(key, this.assetMap[key]);
+    let value = this.assetMap[key];
+    if (prepend) {
+      var re = new RegExp(`\/?` + escapeRegExp(key), 'g');
+      newString = newString.replace(re, function(match, index, str) {
+        debugger;
+        if (str[index - 1].match(/\w/)) {
+          return match;
+        } else {
+          return prepend + '/' + value;
+        }
+      });
+    } else {
+      let re = new RegExp(escapeRegExp(key), 'g');
+      newString = newString.replace(re, this.assetMap[key]);
+    }
   });
   return newString;
 }

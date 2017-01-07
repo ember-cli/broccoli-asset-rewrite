@@ -1,3 +1,5 @@
+"use strict";
+
 var Filter = require('broccoli-filter');
 var path = require('path');
 var Cache = require('broccoli-filter/lib/cache');

@@ -149,8 +149,7 @@ describe('broccoli-asset-rev', function() {
       replaceExtensions: ['js'],
       assetMap: {
         'images/some-image.jpg': 'images/some-image-1a2b3c4e.jpg',
-        'the.map' : 'the-other-map',
-        'http://absolute.com/source.map' : 'http://cdn.absolute.com/other-map'
+        'the.map' : 'the-other-map'
       },
       prepend: 'https://cloudfront.net/'
     });

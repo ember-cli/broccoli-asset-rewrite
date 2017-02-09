@@ -44,7 +44,7 @@ AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relative
   this._cache = new Cache();
 
   return Filter.prototype.processAndCacheFile.apply(this, arguments);
-}
+};
 
 /**
  * Checks that file is not being ignored and destination doesn't already have a file
@@ -79,7 +79,7 @@ AssetRewrite.prototype.canProcessFile = function(relativePath) {
   }
 
   return Filter.prototype.canProcessFile.apply(this, arguments);
-}
+};
 
 AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replacementPath) {
 
@@ -114,20 +114,42 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    */
   var ignoreLibraryCode = new RegExp('%(22|27|5C|28|29|3D)[^"\'()=]*' + escapeRegExp(assetPath));
 
+  var lastReplaceString;
+
   while (match = re.exec(newString)) {
     var replaceString = '';
-    if (ignoreLibraryCode.exec(match[1])) {
+    var matchedAsset = match[1];
+
+    // lastReplaceString is used to fix the issue:
+    // https://github.com/rickharrison/broccoli-asset-rewrite/pull/47
+    // when one file has repeated images
+    if (lastReplaceString === matchedAsset || ignoreLibraryCode.exec(matchedAsset)) {
       continue;
     }
 
-    replaceString = match[1].replace(assetPath, replacementPath);
-
-    if (this.prepend && replaceString.indexOf(this.prepend) !== 0) {
-      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$');
-      replaceString = this.prepend + removeLeadingRelativeOrSlashRegex.exec(replaceString)[2];
+    var fragments = '';
+    // if asset url has fragments
+    if (matchedAsset.indexOf('?') !== -1 || matchedAsset.indexOf('#') !== -1) {
+      var fragmentsMatchRegx = new RegExp('^(.*?)([\\?|#].*)?$');
+      matchedAsset = match[1].replace(fragmentsMatchRegx, function(m, path, frmt) {
+        fragments = frmt;
+        return path;
+      });
     }
 
+    if (this.prepend && this.prepend !== '') {
+      replaceString = this.prepend + replacementPath;
+    } else {
+      replaceString = matchedAsset.replace(assetPath, replacementPath);
+    }
+
+    if (fragments) {
+      replaceString += fragments;
+    }
+
+    // replace original match[1], not the processed matchedAsset
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);
+    lastReplaceString = replaceString;
   }
 
   var self = this;

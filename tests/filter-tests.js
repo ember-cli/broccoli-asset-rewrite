@@ -52,7 +52,7 @@ describe('broccoli-asset-rev', function() {
     return builder.build().then(function(graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
-  })
+  });
 
   it('ignore option tell filter what files should not be processed', function(){
     var sourcePath = 'tests/fixtures/with-ignore';
@@ -231,6 +231,22 @@ describe('broccoli-asset-rev', function() {
     builder = new broccoli.Builder(node);
     return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
-    })
+    });
   });
+
+  it('rewrites multiple references to the same url', function () {
+    var sourcePath = 'tests/fixtures/repeated-url-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'assets/images/repeated.png': 'assets/images/repeated.png'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
 });

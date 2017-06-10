@@ -233,4 +233,22 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     })
   });
+
+  it('handles srcset', function () {
+    var sourcePath = 'tests/fixtures/srcset';
+    debugger
+    var node = new AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        '/images/my-folder/my-image.png': '/images/my-folder/my-image-fingerprinted.png',
+        '/images/my-folder/my-image_@1.5x.png': '/images/my-folder/my-image-fingerprinted_@1.5x.png',
+        '/images/my-folder/my-image_@150w.png': '/images/my-folder/my-image-fingerprinted_@150w.png'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

@@ -17,6 +17,45 @@ function relative(a, b) {
   return relativePath.charAt(0) !== '.' ? './' + relativePath : relativePath;
 }
 
+/*
+ * Checks if there is already a prepend in the current match.
+ */
+function alreadyHasPrepend(string, prepend, offset, submatch) {
+  var startIndex = offset + (submatch || "").length - prepend.length;
+
+  // Can be a problem if startIndex is -1 and there is no
+  // prepend in string.
+  if (startIndex < 0) {
+    return false;
+  }
+
+  return string.indexOf(prepend, startIndex) === startIndex;
+}
+
+/**
+ * Creates a function to use as second argument in String.prototype.replace.
+ * The function avoids prepending twice. If the prepend needs to be applied,
+ * it removes leading relative path from the replacement.
+ * 
+ * @param {String} replacement the string that will replace the match
+ * @param {String} prepend an string to prepend the replacement with.
+ */
+function replacer(replacement, prepend) {
+  var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$');
+  return function(match, submatch) {
+    var offset = arguments[arguments.length - 2];
+    var string = arguments[arguments.length - 1];
+
+    if (alreadyHasPrepend(string, prepend, offset, submatch)) {
+      return submatch + replacement;
+    }
+
+    // submatch would have been removed by removeLeadingRelativeOrSlashRegex,
+    // so no need to concat.
+    return prepend + removeLeadingRelativeOrSlashRegex.exec(replacement)[2];
+  }
+}
+
 function AssetRewrite(inputNode, options) {
   if (!(this instanceof AssetRewrite)) {
     return new AssetRewrite(inputNode, options);
@@ -120,11 +159,13 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
       continue;
     }
 
-    replaceString = match[1].replace(assetPath, replacementPath);
+    var replaceString;
 
-    if (this.prepend && replaceString.indexOf(this.prepend) !== 0) {
-      var removeLeadingRelativeOrSlashRegex = new RegExp('^(\\.*/)*(.*)$');
-      replaceString = this.prepend + removeLeadingRelativeOrSlashRegex.exec(replaceString)[2];
+    if (this.prepend) {
+      replaceString = match[1].replace(new RegExp('(\\.*/)*' + assetPath, 'g'),
+                                       replacer(replacementPath, this.prepend));
+    } else {
+      replaceString = match[1].replace(new RegExp(assetPath, 'g'), replacementPath);
     }
 
     newString = newString.replace(new RegExp(escapeRegExp(match[1]), 'g'), replaceString);

@@ -233,4 +233,37 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     })
   });
+
+  it('replaces assets in srcset attributes', function(){
+    var sourcePath = 'tests/fixtures/srcset';
+    var node = AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        '/assets/img/small.png': '/assets/img/other-small.png',
+        '/assets/img/medium.png': '/assets/img/other-medium.png',
+        '/assets/img/big.png': '/assets/img/other-big.png'
+      }
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('replaces assets in srcset attributes with prepend option', function(){
+    var sourcePath = 'tests/fixtures/srcset-prepend';
+    var node = AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        '/assets/img/small.png': '/assets/img/other-small.png',
+        '/assets/img/medium.png': '/assets/img/other-medium.png',
+        '/assets/img/big.png': '/assets/img/other-big.png'
+      },
+      prepend: 'https://subdomain.cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

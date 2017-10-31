@@ -266,4 +266,41 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });
+
+  it('handles files containing duplicates of the same path', function () {
+    var sourcePath = 'tests/fixtures/duplicate';
+    var node = AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['css', 'html', 'js'],
+      assetMap: {
+        'foo/bar/a.js': 'foo/bar/a.js',
+        'foo/bar/b.js': 'foo/bar/b-fingerprint.js',
+        'assets/images/a.png': 'assets/images/a.png',
+        'assets/images/b.png': 'assets/images/b-fingerprint.png'
+      }
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('handles files containing duplicates of the same path with prepend', function () {
+    var sourcePath = 'tests/fixtures/duplicate-prepend';
+    var node = AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['css', 'html', 'js'],
+      assetMap: {
+        'foo/bar/a.js': 'foo/bar/a.js',
+        'foo/bar/b.js': 'foo/bar/b-fingerprint.js',
+        'assets/images/a.png': 'assets/images/a.png',
+        'assets/images/b.png': 'assets/images/b-fingerprint.png'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

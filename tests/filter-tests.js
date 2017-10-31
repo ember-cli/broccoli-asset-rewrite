@@ -233,4 +233,37 @@ describe('broccoli-asset-rev', function() {
       confirmOutput(graph.directory, sourcePath + '/output');
     })
   });
+
+  it('handles escaped quotes', function () {
+    var sourcePath = 'tests/fixtures/escaped-path';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'assets/images/foo.png': 'assets/images/foo-fingerprint.png',
+        'assets/images/bar.png': 'assets/images/bar-fingerprint.png',
+      },
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('handles escaped quotes with prepend', function () {
+    var sourcePath = 'tests/fixtures/escaped-path-prepend';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'assets/images/foo.png': 'assets/images/foo-fingerprint.png',
+        'assets/images/bar.png': 'assets/images/bar-fingerprint.png',
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
 });

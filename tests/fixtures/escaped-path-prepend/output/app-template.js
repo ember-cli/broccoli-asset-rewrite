@@ -1,0 +1,1 @@
+export default {"id":"F1vwmGpW","block":"{\"symbols\":[],\"statements\":[[6,\"img\"],[9,\"src\",\"https://cloudfront.net/assets/images/bar-fingerprint.png\"],[7],[8]],\"hasEval\":false}","meta":{"specifier":"template:/my-app/components/my-app"}};

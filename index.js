@@ -97,17 +97,18 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    * \\s* - Any amount of white space
    * ( - Starts the first capture group
    * [^"\'()=]* - Do not match any of ^"'()= 0 or more times
-   * [^"\'()\\>=]* - Do not match any of ^"'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
+   * [^"\n\'()\\>=]* - Do not match any of ^"\n'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
    * ) - End first capture group
    * (\\?[^"\')> ]*)? - Allow for query parameters to be present after the URL of an asset
    * \\s* - Any amount of white space
    * \\\\* - Allow any amount of \ - For handlebars compilation (includes \\\)
    * \\s* - Any amount of white space
-   * ["\')> ] - Match one of "'( > exactly one time
+   * ["\')>\s] - Match one of "'(\n> exactly one time
    */
 
-  var re = new RegExp('["\'(=]\\s*([^"\'()=]*' + escapeRegExp(assetPath) + '[^"\'()\\>=]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')> ]', 'g');
+  var re = new RegExp('["\'(=]\\s*([^"\'()=]*' + escapeRegExp(assetPath) + '[^"\n\'()\\>=]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')>\s]', 'g');
   var match = null;
+  
   /*
    * This is to ignore matches that should not be changed
    * Any URL encoded match that would be ignored above will be ignored by this: "'()=\

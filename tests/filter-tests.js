@@ -219,7 +219,6 @@ describe('broccoli-asset-rev', function() {
     });
   });
 
-
   it('handles JavaScript files in a reasonable amount of time', function () {
     this.timeout(500);
     var sourcePath = 'tests/fixtures/js-perf';
@@ -263,6 +262,23 @@ describe('broccoli-asset-rev', function() {
 
     builder = new broccoli.Builder(node);
     return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('ignores JavaScript comments with URLs', function () {
+    var sourcePath = 'tests/fixtures/js-comment';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'the.map': 'the-other-map',
+        'app.js': 'http://cdn.absolute.com/app.js'
+      },
+      prepend: '/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
       confirmOutput(graph.directory, sourcePath + '/output');
     });
   });

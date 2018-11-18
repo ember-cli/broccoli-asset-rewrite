@@ -148,8 +148,10 @@ describe('broccoli-asset-rev', function() {
     var node = new AssetRewrite(sourcePath + '/input', {
       replaceExtensions: ['js'],
       assetMap: {
-        'the.map' : 'the-other-map',
-        'http://absolute.com/source.map' : 'http://cdn.absolute.com/other-map'
+        'images/some-image.jpg': 'images/some-image-1a2b3c4e.jpg',
+        'images/some-image_@2x.jpg': 'images/some-image_@2x-1a2b3c4e.jpg',
+        'images/some-image_@3x.jpg': 'images/some-image_@3x-1a2b3c4e.jpg',
+        'the.map' : 'the-other-map'
       },
       prepend: 'https://cloudfront.net/'
     });
@@ -220,7 +222,7 @@ describe('broccoli-asset-rev', function() {
   });
 
   it('handles JavaScript files in a reasonable amount of time', function () {
-    this.timeout(500);
+    this.timeout(1000);
     var sourcePath = 'tests/fixtures/js-perf';
     var node = new AssetRewrite(sourcePath + '/input', {
       assetMap: JSON.parse(fs.readFileSync(__dirname + '/fixtures/js-perf/asset-map.json')),

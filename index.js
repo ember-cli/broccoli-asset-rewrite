@@ -93,20 +93,20 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
    *
    * Uses a regular expression to find assets in html tags, css backgrounds, handlebars pre-compiled templates, etc.
    *
-   * ["\'(=] - Match one of "'(= exactly one time
+   * (["'`(=]|`\$\{[^\}\n]+\}) -  Match one of "'`(= exactly one time, or match string interpolation in a backtick string
    * \\s* - Any amount of white space
    * ( - Starts the first capture group
-   * [^"\'()=]* - Do not match any of ^"'()= 0 or more times
-   * [^"\n\'()\\>=]* - Do not match any of ^"\n'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
+   * [^"\'`()=]* - Do not match any of ^"'`()= 0 or more times
+   * [^"\n\'`()\\>=]* - Do not match any of ^"\n'`()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
    * ) - End first capture group
-   * (\\?[^"\')> ]*)? - Allow for query parameters to be present after the URL of an asset
+   * (\\?[^"\'`)> ]*)? - Allow for query parameters to be present after the URL of an asset
    * \\s* - Any amount of white space
    * \\\\* - Allow any amount of \ - For handlebars compilation (includes \\\)
    * \\s* - Any amount of white space
-   * ["\')>\s] - Match one of "'(\n> exactly one time
+   * ["\'`)>\s] - Match one of "'`)\n> exactly one time
    */
 
-  var re = new RegExp('["\'(=]\\s*([^"\'()=]*' + escapeRegExp(assetPath) + '[^"\n\'()\\>=]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')>\s]', 'g');
+  var re = new RegExp('(?:["\'`(=]|`\\$\\{[^\\}\\n]+\\})\\s*([^"\'`()=]*' + escapeRegExp(assetPath) + '[^"\n\'`()\\>=]*)(\\?[^"\'`)> ]*)?\\s*\\\\*\\s*["\'`)>\s]', 'g');
   var match = null;
   
   /*

@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "broccoli": "^0.16.9",
-    "codecov": "^1.0.1",
+    "codecov": "^3.6.5",
     "istanbul": "^0.4.1",
     "mocha": "~3.0.2",
     "walk-sync": "~0.1.2"

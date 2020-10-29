@@ -2,15 +2,6 @@
   "name": "broccoli-asset-rewrite",
   "version": "2.0.0",
   "description": "broccoli plugin to rewrite a source tree from an asset map.",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha tests",
-    "test:cover": "istanbul cover ./node_modules/mocha/bin/_mocha tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/rickharrison/broccoli-asset-rewrite"
-  },
   "keywords": [
     "broccoli",
     "broccoli-plugin",
@@ -18,12 +9,21 @@
     "rewrite",
     "fingerprint"
   ],
-  "author": "Rick Harrison",
-  "license": "MIT",
+  "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
   "bugs": {
     "url": "https://github.com/rickharrison/broccoli-asset-rewrite/issues"
   },
-  "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rickharrison/broccoli-asset-rewrite"
+  },
+  "license": "MIT",
+  "author": "Rick Harrison",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests",
+    "test:cover": "istanbul cover ./node_modules/mocha/bin/_mocha tests"
+  },
   "dependencies": {
     "broccoli-filter": "^1.2.3"
   },
@@ -34,9 +34,29 @@
     "codecov": "^1.0.1",
     "istanbul": "^0.4.1",
     "mocha": "~8.2.0",
+    "release-it": "^14.2.0",
+    "release-it-lerna-changelog": "^3.0.0",
     "walk-sync": "~0.1.2"
   },
   "engines": {
     "node": "10.* || 12.* || >= 14"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "release-it": {
+    "plugins": {
+      "release-it-lerna-changelog": {
+        "infile": "CHANGELOG.md",
+        "launchEditor": true
+      }
+    },
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true,
+      "tokenRef": "GITHUB_AUTH"
+    }
   }
 }

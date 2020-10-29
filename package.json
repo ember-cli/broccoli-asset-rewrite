@@ -29,9 +29,11 @@
   },
   "devDependencies": {
     "broccoli": "^0.16.9",
+    "broccoli-test-helper": "^2.0.0",
+    "chai": "^4.2.0",
     "codecov": "^1.0.1",
     "istanbul": "^0.4.1",
-    "mocha": "~3.0.2",
+    "mocha": "~8.2.0",
     "walk-sync": "~0.1.2"
   },
   "engines": {

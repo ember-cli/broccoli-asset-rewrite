@@ -1,6 +1,6 @@
-var Filter = require('broccoli-filter');
+var Filter = require('broccoli-persistent-filter');
 var path = require('path');
-var Cache = require('broccoli-filter/lib/cache');
+var stringify = require('json-stable-stringify');
 
 function normalize(str) {
   return str.replace(/[\\\/]+/g, '/');
@@ -24,10 +24,15 @@ function AssetRewrite(inputNode, options) {
 
   options = options || {};
 
+  if (typeof options.persist === 'undefined') {
+    options.persist = true;
+  }
+
   Filter.call(this, inputNode, {
     extensions: options.replaceExtensions || ['html', 'css'],
     // We should drop support for `description` in the next major release
-    annotation: options.description || options.annotation
+    annotation: options.description || options.annotation,
+    persist: options.persist
   });
 
   this.assetMap = options.assetMap || {};
@@ -35,14 +40,29 @@ function AssetRewrite(inputNode, options) {
   this.ignore = options.ignore || []; // files to ignore
 
   this.assetMapKeys = null;
+  this.options = options;
 }
 
 AssetRewrite.prototype = Object.create(Filter.prototype);
 AssetRewrite.prototype.constructor = AssetRewrite;
 
-AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {
-  this._cache = new Cache();
+AssetRewrite.prototype.baseDir = function () {
+  return __dirname;
+};
 
+AssetRewrite.prototype.optionsHash = function () {
+  if (!this._optionsHash) {
+    this._optionsHash = stringify(this.options);
+  }
+
+  return this._optionsHash;
+};
+
+AssetRewrite.prototype.cacheKeyProcessString = function(string, relativePath) {
+  return this.optionsHash() + Filter.prototype.cacheKeyProcessString.call(this, string, relativePath);
+};
+
+AssetRewrite.prototype.processAndCacheFile = function (srcDir, destDir, relativePath) {
   return Filter.prototype.processAndCacheFile.apply(this, arguments);
 }
 

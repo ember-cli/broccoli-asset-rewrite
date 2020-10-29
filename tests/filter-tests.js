@@ -159,6 +159,22 @@ describe('broccoli-asset-rev', function() {
     });
   });
 
+  it('replaces source map URLs when publicUrl is used', function () {
+    var sourcePath = 'tests/fixtures/sourcemaps-publicUrl';
+
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'the.map' : 'the-other-map',
+        'source.map' : 'other-map'
+      }
+    });
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
   it('maintains fragments', function () {
     var sourcePath = 'tests/fixtures/fragments';
     var node = new AssetRewrite(sourcePath + '/input', {

@@ -132,7 +132,7 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
   }
 
   var self = this;
-  return newString.replace(new RegExp('sourceMappingURL=' + escapeRegExp(assetPath)), function(wholeMatch) {
+  return newString.replace(new RegExp('sourceMappingURL=\\S*' + escapeRegExp(assetPath)), function(wholeMatch) {
     var replaceString = replacementPath;
     if (self.prepend && (!/^sourceMappingURL=(http|https|\/\/)/.test(wholeMatch))) {
       replaceString = self.prepend + replacementPath;

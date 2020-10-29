@@ -159,6 +159,66 @@ describe('broccoli-asset-rev', function() {
     });
   });
 
+  it('updates the `file` attribute in .map files, ignoring the prepend options', function () {
+    var sourcePath = 'tests/fixtures/map-files';
+
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['map'],
+      assetMap: {
+        'vendor.js' : 'vendor-1.js'
+      },
+      prepend: 'https://cloudfront.net/'
+    });
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('updates the `file` attribute in .map files when there are subdirs/name collisions', function () {
+    var sourcePath = 'tests/fixtures/map-files-collision';
+
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['map'],
+      assetMap: {
+        'target1/vendor.js' : 'vendor-1.js',
+        'target2/vendor.js' : 'vendor-2.js'
+      }
+    });
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('tolerates .map files containing invalid JSON', function () {
+    var sourcePath = 'tests/fixtures/map-files-bad-json';
+
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['map'],
+      assetMap: {
+        'vendor.js' : 'vendor-1.js'
+      }
+    });
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
+  it('tolerates .map files whose js file is not present', function () {
+    var sourcePath = 'tests/fixtures/map-files-js-missing';
+
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['map'],
+      assetMap: {}
+    });
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function (graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  });
+
   it('maintains fragments', function () {
     var sourcePath = 'tests/fixtures/fragments';
     var node = new AssetRewrite(sourcePath + '/input', {

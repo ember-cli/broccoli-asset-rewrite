@@ -141,7 +141,38 @@ AssetRewrite.prototype.rewriteAssetPath = function (string, assetPath, replaceme
   });
 };
 
+AssetRewrite.prototype.processMapFile = function (string, relativePath) {
+  /*
+   * .map files need custom handling. The Javascript source content is meant to
+   * reflect the source code itself, so it doesn't make sense to re-write asset
+   * paths there, and the list of source files is also meant to be relative paths
+   * rather than fingerprinted URLs. However, the `file` attribute contains the
+   * filename of the minified .js file that the .map file is describing, so that
+   * should be updated to contain the fingerprinted filename. Since multiple .js
+   * files could have the same filename, we only look for .js files in the same
+   * directory.
+   */
+  var json;
+  try {
+    json = JSON.parse(string);
+  } catch (e) {
+    console.warn('[WARN] (broccoli-asset-rewrite) Unable to parse map file: `' + relativePath + '`: ' + e);
+    return string;
+  }
+
+  var expectedPath = path.join(path.dirname(relativePath), json.file);
+  if (this.assetMap[expectedPath]) {
+    json.file = path.basename(this.assetMap[expectedPath]);
+    return JSON.stringify(json);
+  }
+  return string;
+}
+
 AssetRewrite.prototype.processString = function (string, relativePath) {
+  if (relativePath.slice(-4) === '.map') {
+    return this.processMapFile(string, relativePath);
+  }
+
   var newString = string;
 
   for (var i = 0, keyLength = this.assetMapKeys.length; i < keyLength; i++) {

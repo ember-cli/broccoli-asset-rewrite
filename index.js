@@ -147,7 +147,8 @@ AssetRewrite.prototype.processString = function (string, relativePath) {
   for (var i = 0, keyLength = this.assetMapKeys.length; i < keyLength; i++) {
     var key = this.assetMapKeys[i];
 
-    if (this.assetMap.hasOwnProperty(key)) {
+    // skip rewrite when replacing filename in same file.
+    if (this.assetMap.hasOwnProperty(key) && this.assetMap[key] !== relativePath && key !== relativePath) {
       /*
        * Rewrite absolute URLs
        */

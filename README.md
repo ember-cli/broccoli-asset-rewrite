@@ -58,3 +58,7 @@ var assetNode = new AssetRewrite(node, {
 Node 10 or higher
 
 [![ghit.me](https://ghit.me/badge.svg?repo=rickharrison/broccoli-asset-rewrite)](https://ghit.me/repo/rickharrison/broccoli-asset-rewrite)
+
+## Contributors
+
+Originally authored by [@rickharrison](https://github.com/rickharrison)

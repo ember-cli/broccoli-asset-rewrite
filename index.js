@@ -28,13 +28,16 @@ class AssetRewrite extends Filter {
     this.assetMap = options.assetMap || {};
     this.prepend = options.prepend || '';
     this.ignore = options.ignore || []; // files to ignore
+    this.enableCaching = options.enableCaching || false;
 
     this.assetMapKeys = null;
   }
 
 
   processAndCacheFile(srcDir, destDir, relativePath) {
-    this._cache = new Cache();
+    if (!this.enableCaching) {
+      this._cache = new Cache();
+    }
     return super.processAndCacheFile(...arguments);
   }
 

@@ -168,7 +168,7 @@ class AssetRewrite extends Filter {
     return newString;
   }
 
-    generateAssetMapKeys () {
+  generateAssetMapKeys () {
     var keys = Object.keys(this.assetMap);
 
     keys.sort(function (a, b) {

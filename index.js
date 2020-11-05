@@ -35,7 +35,8 @@ class AssetRewrite extends Filter {
 
 
   processAndCacheFile(srcDir, destDir, relativePath) {
-    if (!this.enableCaching) {
+    let shouldResetCache = !this.enableCaching;
+    if (shouldResetCache) {
       this._cache = new Cache();
     }
     return super.processAndCacheFile(...arguments);

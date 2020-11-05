@@ -58,6 +58,13 @@ describe("broccoli-asset-rev", function () {
     });
     await output.build();
 
+    expect(output.changes()).to.deep.equal({
+      "encoded-meta-tag.html": "create",
+      "fonts.css": "create",
+      "quoted-script-tag.html": "create",
+      "unquoted-script-tag.html": "create",
+      "unquoted-url-in-styles.css": "create",
+    });
     expect(output.read()).to.deep.equal({
       "encoded-meta-tag.html": `<meta name="ember-sample/config/environment" content="%7B%22modulePrefix%22%3A%22ember-sample%22%2C%22environment%22%3A%22development%22%2C%22baseURL%22%3A%22/%22%2C%22locationType%22%3A%22auto%22%2C%22marked%22%3A%7B%22js%22%3A%22/foo/bar/widget.js%22%2C%22highlights%22%3Afalse%7D%2C%22EmberENV%22%3A%7B%22FEATURES%22%3A%7B%7D%7D%2C%22APP%22%3A%7B%22name%22%3A%22ember-sample%22%2C%22version%22%3A%220.0.0.bb29331f%22%7D%2C%22contentSecurityPolicyHeader%22%3A%22Content-Security-Policy-Report-Only%22%2C%22contentSecurityPolicy%22%3A%7B%22default-src%22%3A%22%27none%27%22%2C%22script-src%22%3A%22%27self%27%20%27unsafe-eval%27%22%2C%22font-src%22%3A%22%27self%27%22%2C%22connect-src%22%3A%22%27self%27%22%2C%22img-src%22%3A%22%27self%27%22%2C%22style-src%22%3A%22%27self%27%22%2C%22media-src%22%3A%22%27self%27%22%7D%2C%22exportApplicationGlobal%22%3Atrue%7D" />`,
       "fonts.css": `@font-face {
@@ -102,6 +109,12 @@ describe("broccoli-asset-rev", function () {
 
     await output.build();
 
+    expect(output.changes()).to.deep.equal({
+      "ignore-this-file": "create",
+      "quoted-script-tag.html": "create",
+      "unquoted-script-tag.html": "create",
+      "unquoted-url-in-styles.css": "create"
+    });
     expect(output.read()).to.deep.equal({
       "ignore-this-file": `<script src="foo/bar/widget.js"></script>`,
       "quoted-script-tag.html": `<script src="blahzorz-1.js"></script>`,
@@ -138,6 +151,13 @@ describe("broccoli-asset-rev", function () {
 
     await output.build();
 
+    expect(output.changes()).to.deep.equal({
+      "assets/": "mkdir",
+      "assets/url-in-styles.css": "create",
+      "quoted-script-tag.html": "create",
+      "unquoted-script-tag.html": "create",
+      "unquoted-url-in-styles.css": "create",
+    });
     expect(output.read()).to.deep.equal({
       assets: {
         "url-in-styles.css": `.sample-img{width:50px;height:50px;background-image:url('images/foobar-fingerprint.png')}
@@ -181,6 +201,14 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "assets/": "mkdir",
+      "assets/no-fingerprint.html": "create",
+      "assets/url-in-styles.css": "create",
+      "quoted-script-tag.html": "create",
+      "unquoted-script-tag.html": "create",
+      "unquoted-url-in-styles.css": "create"
+    });
     expect(output.read()).to.deep.equal({
       assets: {
         "no-fingerprint.html": `<script src="https://cloudfront.net/dont/fingerprint/me.js"></script>`,
@@ -223,6 +251,9 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "styles.css": "create"
+    });
     expect(output.read()).to.deep.equal({
       "styles.css": `@font-face {
         font-family: 'RobotoRegular';
@@ -254,6 +285,10 @@ describe("broccoli-asset-rev", function () {
       "sample.js": `(function x(){return 42})//# sourceMappingURL=the.map`,
     });
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "abs.js": "create",
+      "sample.js": "create",
+    });
     expect(output.read()).to.deep.equal({
       "abs.js": `(function x(){return 42})//# sourceMappingURL=http://cdn.absolute.com/other-map`,
       "sample.js": `(function x(){return 42})//# sourceMappingURL=the-other-map`,
@@ -277,6 +312,10 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "abs.js": "create",
+      "sample.js": "create"
+    });
     expect(output.read()).to.deep.equal({
       "abs.js": `(function x(){return 42})//# sourceMappingURL=http://cdn.absolute.com/other-map`,
       "sample.js": `(function x(){return 42})//# sourceMappingURL=https://cloudfront.net/the-other-map`,
@@ -297,6 +336,10 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "svg-tag.html": "create",
+      "unquoted-url-in-styles.css": "create"
+    });
     expect(output.read()).to.deep.equal({
       "svg-tag.html": `<svg><use xlink:href="/images/fingerprinted-defs.svg#plus"></use></svg>`,
       "unquoted-url-in-styles.css": `.sample-img{width:50px;height:50px;background-image:url(/images/fingerprinted-defs.svg#plus)}`,
@@ -318,6 +361,10 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "svg-tag.html": "create",
+      "unquoted-url-in-styles.css": "create"
+    });
     expect(output.read()).to.deep.equal({
       "svg-tag.html": `<svg><use xlink:href="https://cloudfront.net/images/fingerprinted-defs.svg#plus"></use></svg>`,
       "unquoted-url-in-styles.css": `.sample-img{width:50px;height:50px;background-image:url(https://cloudfront.net/images/fingerprinted-defs.svg#plus)}`,
@@ -341,6 +388,11 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "img-tag.html": "create",
+      "no-fingerprint.html": "create",
+      "unquoted-url-in-styles.css": "create",
+    });
     expect(output.read()).to.deep.equal({
       "img-tag.html": `<img src="https://cloudfront.net/my-image-fingerprinted.png">`,
       "no-fingerprint.html": `<script src="https://cloudfront.net/dont/fingerprint/me.js"></script>`,
@@ -366,6 +418,9 @@ describe("broccoli-asset-rev", function () {
       `,
     });
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "script-tag-with-query-parameters.html": "create"
+    });
     expect(output.read()).to.deep.equal({
       "script-tag-with-query-parameters.html": `<script src="foo/bar/fingerprinted-widget.js?hello=world"></script>
       <script src="foo/bar/fingerprinted-widget.js?hello=world&amp;foo=bar"></script>
@@ -392,6 +447,9 @@ describe("broccoli-asset-rev", function () {
     });
     const output = createBuilder(subject);
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "test-support.js": "create"
+    });
     expect(output.read()).to.deep.equal(fixtures.read("js-perf/output"));
   });
 
@@ -422,6 +480,9 @@ describe("broccoli-asset-rev", function () {
     });
 
     await output.build();
+    expect(output.changes()).to.deep.equal({
+      "snippet.js": "create"
+    });
     expect(output.read()).to.deep.equal({
       "snippet.js": `/**
       here's some code.

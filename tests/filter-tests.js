@@ -508,33 +508,32 @@ describe("broccoli-asset-rev", function () {
     input.write(fixtures.read("js-perf/input"));
 
     const subject = new AssetRewrite(input.path(), {
-      assetMap: {
-        assetMap: JSON.parse(
-          fs.readFileSync(`${fixturesPath}/js-perf/asset-map.json`)
-        ),
-        replaceExtensions: ["js"],
-        enableCaching: true
-      },
+      assetMap: JSON.parse(
+        fs.readFileSync(`${fixturesPath}/js-perf/asset-map.json`)
+      ),
+      replaceExtensions: ["js"],
+      enableCaching: true
     });
     const output = createBuilder(subject);
 
-    const run1Start = process.hrtime();
     await output.build();
     let expectedTestSupportOutput = fs.readFileSync(`${fixturesPath}/js-perf/output/test-support.js`).toString();
-    const run1End = process.hrtime(run1Start);
+    const run1ProcessedCount = subject._debugProcessedCount;
+    expect(run1ProcessedCount).to.equal(1);
+    expect(output.changes()).to.deep.equal({
+      "test-support.js": "create"
+    });
     expect(output.read()).to.deep.equal({
       'test-support.js': expectedTestSupportOutput
     });
 
-    const run2Start = process.hrtime();
     await output.build();
-    const run2End = process.hrtime(run2Start);
+    const run2ProcessedCount = subject._debugProcessedCount - run1ProcessedCount;
+    expect(output.changes()).to.deep.equal({});
     expect(output.read()).to.deep.equal({
       'test-support.js': expectedTestSupportOutput
     });
     
-    const run1DurationMs = (run1End[0] * 1000000000 + run1End[1]) / 1000000;
-    const run2DurationMs = (run2End[0] * 1000000000 + run2End[1]) / 1000000;
-    expect(run2DurationMs).to.be.below(run1DurationMs * .75, `cache should make second run (${run2DurationMs}ms) at least 25% faster than first run (${run1DurationMs}ms)`);
+    expect(run2ProcessedCount).to.equal(0);
   });
 });

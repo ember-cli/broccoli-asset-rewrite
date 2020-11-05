@@ -31,6 +31,7 @@ class AssetRewrite extends Filter {
     this.enableCaching = options.enableCaching || false;
 
     this.assetMapKeys = null;
+    this._debugProcessedCount = 0;
   }
 
 
@@ -164,7 +165,7 @@ class AssetRewrite extends Filter {
         newString = this.rewriteAssetPath(newString, pathDiff, replacementDiff);
       }
     }
-
+    this._debugProcessedCount++;
     return newString;
   }
 

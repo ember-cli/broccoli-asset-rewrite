@@ -536,4 +536,20 @@ describe("broccoli-asset-rev", function () {
     
     expect(run2ProcessedCount).to.equal(0);
   });
+
+  it('should prepend both relative and abosulte paths to the same asset', function(){
+    var sourcePath = 'tests/fixtures/mixed-relative-absolute-urls-prepend';
+    var node = AssetRewrite(sourcePath + '/input', {
+      assetMap: {
+        'assets/images/some-image.svg': 'assets/images/some-image-fingerprinted.svg'
+      },
+      replaceExtensions: ['js'],
+      prepend: 'https://cloudfront.net/'
+    });
+
+    builder = new broccoli.Builder(node);
+    return builder.build().then(function(graph) {
+      confirmOutput(graph.directory, sourcePath + '/output');
+    });
+  })
 });

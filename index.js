@@ -3,7 +3,7 @@ var path = require('path');
 var Cache = require('broccoli-filter/lib/cache');
 
 function normalize(str) {
-  return str.replace(/[\\\/]+/g, '/');
+  return str.replace(/[\\/]+/g, '/');
 }
 
 function relative(a, b) {
@@ -33,7 +33,7 @@ class AssetRewrite extends Filter {
     this._debugProcessedCount = 0;
   }
 
-  processAndCacheFile(srcDir, destDir, relativePath) {
+  processAndCacheFile() {
     let shouldResetCache = !this.enableCaching;
     if (shouldResetCache) {
       this._cache = new Cache();
@@ -151,7 +151,7 @@ class AssetRewrite extends Filter {
     for (var i = 0, keyLength = this.assetMapKeys.length; i < keyLength; i++) {
       var key = this.assetMapKeys[i];
 
-      if (this.assetMap.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(this.assetMap, key)) {
         /*
          * Rewrite absolute URLs
          */
@@ -199,7 +199,7 @@ class AssetRewrite extends Filter {
  * /([.*+?^=!:${}()|\[\]\/\\])/g - Replace .*+?^=!:${}()|[]/\ in filenames with an escaped version for an exact name match
  */
 function escapeRegExp(string) {
-  return string.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
+  return string.replace(/([.*+?^${}()|[\]/\\])/g, '\\$1');
 }
 
 module.exports = AssetRewrite;

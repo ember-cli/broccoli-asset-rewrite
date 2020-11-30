@@ -28,13 +28,18 @@ class AssetRewrite extends Filter {
     this.assetMap = options.assetMap || {};
     this.prepend = options.prepend || '';
     this.ignore = options.ignore || []; // files to ignore
+    this.enableCaching = options.enableCaching || false;
 
     this.assetMapKeys = null;
+    this._debugProcessedCount = 0;
   }
 
 
   processAndCacheFile(srcDir, destDir, relativePath) {
-    this._cache = new Cache();
+    let shouldResetCache = !this.enableCaching;
+    if (shouldResetCache) {
+      this._cache = new Cache();
+    }
     return super.processAndCacheFile(...arguments);
   }
 
@@ -160,11 +165,11 @@ class AssetRewrite extends Filter {
         newString = this.rewriteAssetPath(newString, pathDiff, replacementDiff);
       }
     }
-
+    this._debugProcessedCount++;
     return newString;
   }
 
-    generateAssetMapKeys () {
+  generateAssetMapKeys () {
     var keys = Object.keys(this.assetMap);
 
     keys.sort(function (a, b) {

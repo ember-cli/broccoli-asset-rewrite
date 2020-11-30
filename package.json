@@ -9,13 +9,13 @@
     "rewrite",
     "fingerprint"
   ],
-  "homepage": "https://github.com/rickharrison/broccoli-asset-rewrite",
+  "homepage": "https://github.com/ember-cli/broccoli-asset-rewrite",
   "bugs": {
-    "url": "https://github.com/rickharrison/broccoli-asset-rewrite/issues"
+    "url": "https://github.com/ember-cli/broccoli-asset-rewrite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/rickharrison/broccoli-asset-rewrite"
+    "url": "git://github.com/ember-cli/broccoli-asset-rewrite"
   },
   "license": "MIT",
   "author": "Rick Harrison",

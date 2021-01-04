@@ -104,9 +104,9 @@ class AssetRewrite extends Filter {
      */
 
     var re = new RegExp(
-      '["\'(=]\\s*([^"\'()=]*' +
+      '["\'(=,]\\s*([^"\'()=,]*' +
         escapeRegExp(assetPath) +
-        '[^"\n\'()\\>=]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')>s]',
+        '[^"\n\'()\\>=,]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')>s,]',
       'g'
     );
     var match = null;

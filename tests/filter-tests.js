@@ -31,7 +31,7 @@ describe('broccoli-asset-rev', function () {
         src: url('fonts/Fiz/Light/Fiz-Light.eot');
         src: url('fonts/Fiz/Light/Fiz-Light.eot?#iefix') format('embedded-opentype'), url('fonts/Fiz/Light/Fiz-Light.woff') format('woff'), url('fonts/Fiz/Light/Fiz-Light.ttf') format('truetype'), url('fonts/Fiz/Light/Fiz-Light.svg#Fiz') format('svg');
       }
-      
+
       @font-face {
         font-family: Fiz;
         font-weight: 200;
@@ -62,7 +62,7 @@ describe('broccoli-asset-rev', function () {
         src: url('fonts/Fiz/Light/fingerprinted-Fiz-Light.eot');
         src: url('fonts/Fiz/Light/fingerprinted-Fiz-Light.eot?#iefix') format('embedded-opentype'), url('fonts/Fiz/Light/fingerprinted-Fiz-Light.woff') format('woff'), url('fonts/Fiz/Light/fingerprinted-Fiz-Light.ttf') format('truetype'), url('fonts/Fiz/Light/fingerprinted-Fiz-Light.svg#Fiz') format('svg');
       }
-      
+
       @font-face {
         font-family: Fiz;
         font-weight: 200;
@@ -520,5 +520,76 @@ describe('broccoli-asset-rev', function () {
     });
 
     expect(run2ProcessedCount).to.equal(0);
+  });
+
+  it('replaces assets in srcset attributes', async function () {
+    const input = await createTempDir();
+    const subject = new AssetRewrite(input.path(), {
+      assetMap: {
+        '/assets/img/small.png': '/assets/img/other-small.png',
+        '/assets/img/medium.png': '/assets/img/other-medium.png',
+        '/assets/img/big.png': '/assets/img/other-big.png',
+      },
+    });
+    const output = createBuilder(subject);
+    input.write({
+      'srcset.html': `<source srcset="/assets/img/small.png 800w, /assets/img/medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+    });
+
+    await output.build();
+    expect(output.changes()).to.deep.equal({
+      'srcset.html': 'create',
+    });
+    expect(output.read()).to.deep.equal({
+      'srcset.html': `<source srcset="/assets/img/other-small.png 800w, /assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+    });
+  });
+
+  it('replaces assets in srcset attributes with prepended path', async function () {
+    const input = await createTempDir();
+    const subject = new AssetRewrite(input.path(), {
+      assetMap: {
+        '/assets/img/small.png': '/assets/img/other-small.png',
+        '/assets/img/medium.png': '/assets/img/other-medium.png',
+        '/assets/img/big.png': '/assets/img/other-big.png',
+      },
+      prepend: 'my-path/',
+    });
+    const output = createBuilder(subject);
+    input.write({
+      'srcset.html': `<source srcset="/assets/img/small.png 800w, /assets/img/medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+    });
+
+    await output.build();
+    expect(output.changes()).to.deep.equal({
+      'srcset.html': 'create',
+    });
+    expect(output.read()).to.deep.equal({
+      'srcset.html': `<source srcset="my-path/assets/img/other-small.png 800w, my-path/assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+    });
+  });
+
+  it('replaces assets in srcset attributes with prepended domain', async function () {
+    const input = await createTempDir();
+    const subject = new AssetRewrite(input.path(), {
+      assetMap: {
+        '/assets/img/small.png': '/assets/img/other-small.png',
+        '/assets/img/medium.png': '/assets/img/other-medium.png',
+        '/assets/img/big.png': '/assets/img/other-big.png',
+      },
+      prepend: 'https://subdomain.cloudfront.net/',
+    });
+    const output = createBuilder(subject);
+    input.write({
+      'srcset.html': `<source srcset="/assets/img/small.png 800w, /assets/img/medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+    });
+
+    await output.build();
+    expect(output.changes()).to.deep.equal({
+      'srcset.html': 'create',
+    });
+    expect(output.read()).to.deep.equal({
+      'srcset.html': `<source srcset="https://subdomain.cloudfront.net/assets/img/other-small.png 800w, https://subdomain.cloudfront.net/assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+    });
   });
 });

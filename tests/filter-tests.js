@@ -541,7 +541,7 @@ describe('broccoli-asset-rev', function () {
       'srcset.html': 'create',
     });
     expect(output.read()).to.deep.equal({
-      'srcset.html': `<source srcset="/assets/img/small.png 800w, /assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+      'srcset.html': `<source srcset="/assets/img/other-small.png 800w, /assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
     });
   });
 
@@ -565,7 +565,7 @@ describe('broccoli-asset-rev', function () {
       'srcset.html': 'create',
     });
     expect(output.read()).to.deep.equal({
-      'srcset.html': `<source srcset="my-path/assets/img/small.png 800w, my-path/assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+      'srcset.html': `<source srcset="my-path/assets/img/other-small.png 800w, my-path/assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
     });
   });
 
@@ -589,7 +589,7 @@ describe('broccoli-asset-rev', function () {
       'srcset.html': 'create',
     });
     expect(output.read()).to.deep.equal({
-      'srcset.html': `<source srcset="https://subdomain.cloudfront.net/assets/img/small.png 800w, https://subdomain.cloudfront.net/assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
+      'srcset.html': `<source srcset="https://subdomain.cloudfront.net/assets/img/other-small.png 800w, https://subdomain.cloudfront.net/assets/img/other-medium.png 1600w" sizes="(max-width: 800px) 800px, 1600px" type="image/png">`,
     });
   });
 });

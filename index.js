@@ -93,8 +93,8 @@ class AssetRewrite extends Filter {
      * ["\'(=] - Match one of "'(= exactly one time
      * \\s* - Any amount of white space
      * ( - Starts the first capture group
-     * [^"\'()=]* - Do not match any of ^"'()= 0 or more times
-     * [^"\n\'()\\>=]* - Do not match any of ^"\n'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
+     * (\\.?/)? - Optionally match ./ or /
+     * [^"\n\'()\\>=]* - Match any character not in ^"\n'()\>= 0 or more times - Explicitly add \ here because of handlebars compilation
      * ) - End first capture group
      * (\\?[^"\')> ]*)? - Allow for query parameters to be present after the URL of an asset
      * \\s* - Any amount of white space
@@ -104,7 +104,7 @@ class AssetRewrite extends Filter {
      */
 
     var re = new RegExp(
-      '["\'(=]\\s*([^"\'()=]*' +
+      '["\'(=]\\s*((\\.?/)?' +
         escapeRegExp(assetPath) +
         '[^"\n\'()\\>=]*)(\\?[^"\')> ]*)?\\s*\\\\*\\s*["\')>s]',
       'g'

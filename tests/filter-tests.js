@@ -31,7 +31,7 @@ describe('broccoli-asset-rev', function () {
         src: url('fonts/Fiz/Light/Fiz-Light.eot');
         src: url('fonts/Fiz/Light/Fiz-Light.eot?#iefix') format('embedded-opentype'), url('fonts/Fiz/Light/Fiz-Light.woff') format('woff'), url('fonts/Fiz/Light/Fiz-Light.ttf') format('truetype'), url('fonts/Fiz/Light/Fiz-Light.svg#Fiz') format('svg');
       }
-      
+
       @font-face {
         font-family: Fiz;
         font-weight: 200;
@@ -62,7 +62,7 @@ describe('broccoli-asset-rev', function () {
         src: url('fonts/Fiz/Light/fingerprinted-Fiz-Light.eot');
         src: url('fonts/Fiz/Light/fingerprinted-Fiz-Light.eot?#iefix') format('embedded-opentype'), url('fonts/Fiz/Light/fingerprinted-Fiz-Light.woff') format('woff'), url('fonts/Fiz/Light/fingerprinted-Fiz-Light.ttf') format('truetype'), url('fonts/Fiz/Light/fingerprinted-Fiz-Light.svg#Fiz') format('svg');
       }
-      
+
       @font-face {
         font-family: Fiz;
         font-weight: 200;
@@ -520,5 +520,45 @@ describe('broccoli-asset-rev', function () {
     });
 
     expect(run2ProcessedCount).to.equal(0);
+  });
+
+  it('ignores remote URLs', async function () {
+    var sourcePath = 'tests/fixtures/remote-url';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'the.map': 'the-other-map',
+        'app.js': 'http://cdn.absolute.com/app.js',
+      },
+      prepend: '/',
+    });
+
+    let output = createBuilder(node);
+
+    await output.build();
+
+    expect(output.read()).to.deep.equal({
+      'snippet.js': '<script src="http://example.com/app/app.js"></script>\n',
+    });
+  });
+
+  it('ignores partial matches', async function () {
+    var sourcePath = 'tests/fixtures/partial-match';
+    var node = new AssetRewrite(sourcePath + '/input', {
+      replaceExtensions: ['js'],
+      assetMap: {
+        'the.map': 'the-other-map',
+        'app.js': 'http://cdn.absolute.com/app.js',
+      },
+      prepend: '/',
+    });
+
+    let output = createBuilder(node);
+
+    await output.build();
+
+    expect(output.read()).to.deep.equal({
+      'snippet.js': '<script src="other-app/app.js"></script>\n',
+    });
   });
 });

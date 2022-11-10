@@ -30,7 +30,7 @@
     "broccoli-filter": "^1.2.3"
   },
   "devDependencies": {
-    "broccoli": "^0.16.9",
+    "broccoli": "^3.5.2",
     "broccoli-test-helper": "^2.0.0",
     "chai": "^4.2.0",
     "codecov": "^1.0.1",
@@ -39,7 +39,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "istanbul": "^0.4.1",
-    "mocha": "~8.2.0",
+    "mocha": "~10.1.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "release-it": "^14.2.0",
